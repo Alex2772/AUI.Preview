@@ -13,6 +13,7 @@ public:
     virtual ~IToken() = default;
     virtual const char* getName() = 0;
 
+    [[nodiscard]]
     unsigned getLineNumber() const {
         return mLineNumber;
     }

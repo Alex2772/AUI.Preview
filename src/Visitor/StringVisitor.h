@@ -24,6 +24,12 @@ public:
         }
         return mText;
     }
+
+    /**
+     * << "..." let { ... } workaround
+     * @param node
+     */
+    void visitNode(const ALetOperatorNode& node) override;
 };
 
 

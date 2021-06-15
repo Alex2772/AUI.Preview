@@ -6,8 +6,11 @@
 #include <Window/MainWindow.h>
 #include "Settings.h"
 #include <Factory/FactoryRegistry.h>
-#include <Factory/MyFactory.h>
+#include <Factory/factory.h>
+#include <Factory/factory_lambda.h>
 #include <AUI/View/AButton.h>
+#include <AUI/Model/AListModelAdapter.h>
+#include <AUI/Model/AListModel.h>
 
 AUI_ENTRY {
     Autumn::put(_new<FactoryRegistry>());
@@ -21,7 +24,17 @@ AUI_ENTRY {
         new factory<AButton>::with_args<AString>,
 
         new factory<ALabel>,
-        new factory<ALabel>::with_args<AString>
+        new factory<ALabel>::with_args<AString>,
+
+        new factory_lambda( [] {
+            _<AListModel<AString>> exampleModel = _new<AListModel<AString>>({
+              "Example data #1",
+              "Example data #2",
+              "Example data #3",
+              "Example data #4",
+            });
+            return _new<AListView>(AAdapter::make<AString>(exampleModel, [](const AString& s){ return s;}));
+        }),
     });
 
     Settings::inst();

@@ -72,6 +72,8 @@ public:
 
     AVector<_<INode>> parse();
 
+    unsigned getCurrentLineNumber() const;
+
 };
 
 

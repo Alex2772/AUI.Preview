@@ -24,13 +24,15 @@ public:
      * @param node
      */
     void visitNode(const LShiftOperatorNode& node) override {
-        StringVisitor c;
-        node.getRight()->acceptVisitor(&c);
-        auto assName = c.getString();
-        node.getLeft()->acceptVisitor(this);
-        if (mView != nullptr) {
-            mView << assName;
-        }
+        try {
+            StringVisitor c;
+            node.getRight()->acceptVisitor(&c);
+            auto assName = c.getString();
+            node.getLeft()->acceptVisitor(this);
+            if (mView != nullptr) {
+                mView << assName;
+            }
+        } catch (...) {}
     }
 
     /**
@@ -44,6 +46,15 @@ public:
     void visitNode(const ALetOperatorNode& node) override {
         node.getTarget()->acceptVisitor(this);
     }
+
+    /**
+     * Handle ... = _new<...>() case
+     * @param node
+     */
+    void visitNode(const AssignmentOperatorNode& node) override {
+        node.getRight()->acceptVisitor(this);
+    }
+
 
     /**
      * _new<?>(?)

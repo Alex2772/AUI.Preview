@@ -660,3 +660,11 @@ _<ExpressionNode> Parser::parseIdentifier() {
     }
     return result;
 }
+
+unsigned Parser::getCurrentLineNumber() const {
+    unsigned lineNumber = 0;
+    std::visit([&](auto&& v) {
+        lineNumber = v.getLineNumber();
+    }, *mIterator);
+    return lineNumber;
+}

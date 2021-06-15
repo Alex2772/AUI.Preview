@@ -6,6 +6,8 @@
 
 
 #include <AUI/Util/ATokenizer.h>
+#include <Cpp/Token/IToken.h>
+
 #include "AnyToken.h"
 
 class Lexer {
@@ -20,5 +22,4 @@ public:
 
     AVector<AnyToken> performLexAnalysis();
 };
-
 

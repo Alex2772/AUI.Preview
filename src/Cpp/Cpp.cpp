@@ -9,6 +9,7 @@
 
 _<AST> Cpp::parseCode(const APath& p) {
     Lexer l(_new<FileInputStream>(p));
-    Parser parser(l.performLexAnalysis());
-    return _new<AST>(parser.parse());
+    auto parser = _new<Parser>(l.performLexAnalysis());
+    Autumn::put(parser);
+    return _new<AST>(parser->parse());
 }
