@@ -62,7 +62,7 @@ void MainWindow::updatePreview() {
         ui {
             auto before2 = high_resolution_clock::now().time_since_epoch();
             LayoutVisitor v;
-            ast->visit(&v);
+            ast->visit(v);
             auto after2 = high_resolution_clock::now().time_since_epoch();
             mPerformanceLabel->setText("Parse: {}ms"_as.format((duration_cast<milliseconds>(after1 - before1 + after2 - before2)).count()));
             mDisplayWrapper->setLayout(_new<AStackedLayout>());

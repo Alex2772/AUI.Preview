@@ -14,7 +14,7 @@ public:
     INode();
     virtual ~INode() = default;
 
-    virtual void acceptVisitor(INodeVisitor* v) = 0;
+    virtual void acceptVisitor(INodeVisitor& v) = 0;
 
     [[nodiscard]]
     unsigned getLineNumber() const {

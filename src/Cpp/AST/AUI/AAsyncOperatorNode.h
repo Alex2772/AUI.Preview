@@ -15,7 +15,7 @@ private:
 public:
     AAsyncOperatorNode(const AVector<_<INode>>& code): mCode(code) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

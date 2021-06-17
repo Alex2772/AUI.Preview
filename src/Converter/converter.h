@@ -21,7 +21,7 @@ namespace aui::preview {
     struct converter<AString> {
         static AString from_vm(const _<ExpressionNode>& n) {
             StringVisitor v;
-            n->acceptVisitor(&v);
+            n->acceptVisitor(v);
             return v.getString();
         }
     };

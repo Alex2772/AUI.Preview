@@ -5,6 +5,6 @@
 #include "StringNode.h"
 #include "INodeVisitor.h"
 
-void StringNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void StringNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

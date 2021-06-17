@@ -5,6 +5,6 @@
 #include "VariableReferenceNode.h"
 #include "INodeVisitor.h"
 
-void VariableReferenceNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void VariableReferenceNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

@@ -5,6 +5,6 @@
 #include "NullptrNode.h"
 #include "INodeVisitor.h"
 
-void NullptrNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void NullptrNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

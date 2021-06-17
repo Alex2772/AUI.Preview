@@ -5,6 +5,6 @@
 #include "OperatorCallNode.h"
 #include "INodeVisitor.h"
 
-void OperatorCallNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void OperatorCallNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

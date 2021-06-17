@@ -6,6 +6,6 @@
 #include "INodeVisitor.h"
 
 
-void ExplicitInitializerListCtorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void ExplicitInitializerListCtorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

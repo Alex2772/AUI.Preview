@@ -15,7 +15,7 @@ private:
 public:
     AST(const AVector<_<INode>>& nodes) : mNodes(nodes) {}
 
-    void visit(INodeVisitor* visitor);
+    void visit(INodeVisitor& visitor);
 
     _<AViewContainer> run();
 };

@@ -18,7 +18,7 @@ public:
     LambdaNode(const AVector<_<VariableDeclarationNode>>& args, const AVector<_<INode>>& code) : mArgs(args),
                                                                                                  mCode(code) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

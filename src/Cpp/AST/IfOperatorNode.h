@@ -27,7 +27,7 @@ public:
         return mCode;
     }
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

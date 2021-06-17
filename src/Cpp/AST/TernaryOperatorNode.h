@@ -19,7 +19,7 @@ public:
     TernaryOperatorNode(const _<ExpressionNode>& condition, const _<ExpressionNode>& onTrue,
                         const _<ExpressionNode>& onFalse) : mCondition(condition), mOnTrue(onTrue), mOnFalse(onFalse) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const _<ExpressionNode>& getCondition() const {
         return mCondition;

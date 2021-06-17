@@ -16,9 +16,9 @@
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
         StringVisitor c;
-        node.getRight()->acceptVisitor(&c);
+        node.getRight()->acceptVisitor(c);
         auto assName = c.getString();
-        node.getLeft()->acceptVisitor(this);
+        node.getLeft()->acceptVisitor(*this);
         if (mView != nullptr) {
             mView << assName;
         }
@@ -26,15 +26,15 @@ void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
 }
 
 void ViewVisitor::visitNode(const MemberAccessOperatorNode& node) {
-    node.getLeft()->acceptVisitor(this);
+    node.getLeft()->acceptVisitor(*this);
 }
 
 void ViewVisitor::visitNode(const ALetOperatorNode& node) {
-    node.getTarget()->acceptVisitor(this);
+    node.getTarget()->acceptVisitor(*this);
 }
 
 void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {
-    node.getRight()->acceptVisitor(this);
+    node.getRight()->acceptVisitor(*this);
 }
 
 void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
@@ -55,7 +55,7 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
             mView = v.getContainer();
 
             if (node.getArgs().size() == 1) {
-                node.getArgs().first()->acceptVisitor(&v);
+                node.getArgs().first()->acceptVisitor(v);
             }
         } catch (...) {
 
@@ -82,7 +82,7 @@ void ViewVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
 
     for (auto& x : node.getArgs()) {
         ViewVisitor v;
-        x->acceptVisitor(&v);
+        x->acceptVisitor(v);
         if (v.getView()) {
             view->addView(v.getView());
         }

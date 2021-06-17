@@ -12,7 +12,7 @@ ContainerListVisitor::ContainerListVisitor() {
 void ContainerListVisitor::visitNode(const ImplicitInitializerListCtorNode& node) {
     for (auto& element : node.getElements()) {
         ViewVisitor v;
-        element->acceptVisitor(&v);
+        element->acceptVisitor(v);
         if (v.getView()) {
             mContainer->addView(v.getView());
         }

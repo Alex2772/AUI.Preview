@@ -5,6 +5,6 @@
 #include "IfOperatorNode.h"
 #include "INodeVisitor.h"
 
-void IfOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void IfOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

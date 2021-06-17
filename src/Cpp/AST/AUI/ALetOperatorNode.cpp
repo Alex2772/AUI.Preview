@@ -5,6 +5,6 @@
 #include "ALetOperatorNode.h"
 #include <Cpp/AST/INodeVisitor.h>
 
-void ALetOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void ALetOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

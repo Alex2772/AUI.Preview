@@ -5,6 +5,6 @@
 #include "LambdaNode.h"
 #include "INodeVisitor.h"
 
-void LambdaNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void LambdaNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

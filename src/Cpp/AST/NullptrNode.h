@@ -9,7 +9,7 @@
 
 class NullptrNode: public ExpressionNode {
 public:
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

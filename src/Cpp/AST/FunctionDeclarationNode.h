@@ -27,7 +27,7 @@ public:
                                                                                mArgs(args), mCode(code) {}
     ~FunctionDeclarationNode() override = default;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const AString& getReturnType() const {
         return mReturnType;

@@ -20,7 +20,7 @@ class ReturnOperatorNode: public UnaryOperatorNode {
 public:
     using UnaryOperatorNode::UnaryOperatorNode;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 
@@ -28,7 +28,7 @@ class LogicalNotOperatorNode: public UnaryOperatorNode {
 public:
     using UnaryOperatorNode::UnaryOperatorNode;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 
@@ -36,14 +36,14 @@ class PointerDereferenceOperatorNode: public UnaryOperatorNode {
 public:
     using UnaryOperatorNode::UnaryOperatorNode;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 class PointerCreationOperatorNode: public UnaryOperatorNode {
 public:
     using UnaryOperatorNode::UnaryOperatorNode;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 
@@ -53,7 +53,7 @@ class UnaryMinusOperatorNode: public UnaryOperatorNode {
 public:
     using UnaryOperatorNode::UnaryOperatorNode;
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

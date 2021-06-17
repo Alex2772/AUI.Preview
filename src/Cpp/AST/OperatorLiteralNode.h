@@ -17,7 +17,7 @@ public:
     OperatorLiteralNode(const AString& literalName, const _<ExpressionNode>& child) : mLiteralName(literalName),
                                                                                       mChild(child) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const AString& getLiteralName() const {
         return mLiteralName;

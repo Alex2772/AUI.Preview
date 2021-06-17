@@ -5,6 +5,6 @@
 #include "OperatorLiteralNode.h"
 #include "INodeVisitor.h"
 
-void OperatorLiteralNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void OperatorLiteralNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

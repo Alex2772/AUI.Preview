@@ -11,7 +11,7 @@ _<AViewContainer> AST::run() {
     };
 }
 
-void AST::visit(INodeVisitor* visitor) {
+void AST::visit(INodeVisitor& visitor) {
     for (auto& v : mNodes) {
         v->acceptVisitor(visitor);
     }

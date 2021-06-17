@@ -12,5 +12,5 @@ void StringVisitor::visitNode(const StringNode& node) {
 
 void StringVisitor::visitNode(const ALetOperatorNode& node) {
     INodeVisitor::visitNode(node);
-    node.getTarget()->acceptVisitor(this);
+    node.getTarget()->acceptVisitor(*this);
 }

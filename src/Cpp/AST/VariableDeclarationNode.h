@@ -29,7 +29,7 @@ public:
                                                                            mPointerCount(pointerCount),
                                                                            mIsReference(isReference) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     bool isConst() const {
         return mIsConst;

@@ -5,6 +5,6 @@
 #include "MethodDeclarationNode.h"
 #include "INodeVisitor.h"
 
-void MethodDeclarationNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void MethodDeclarationNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

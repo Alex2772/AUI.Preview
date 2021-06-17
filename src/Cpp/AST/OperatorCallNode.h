@@ -17,7 +17,7 @@ private:
 public:
     OperatorCallNode(const AString& callee, const AVector<_<ExpressionNode>>& args) : mCallee(callee), mArgs(args) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const AString& getCallee() const {
         return mCallee;

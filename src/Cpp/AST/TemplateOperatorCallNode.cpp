@@ -5,6 +5,6 @@
 #include "TemplateOperatorCallNode.h"
 #include "INodeVisitor.h"
 
-void TemplateOperatorCallNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void TemplateOperatorCallNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

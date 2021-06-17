@@ -6,6 +6,6 @@
 #include "INodeVisitor.h"
 
 
-void VariableDeclarationNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void VariableDeclarationNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

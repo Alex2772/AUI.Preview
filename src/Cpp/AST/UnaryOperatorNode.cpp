@@ -6,22 +6,22 @@
 #include "INodeVisitor.h"
 
 
-void ReturnOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void ReturnOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }
 
-void LogicalNotOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void LogicalNotOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }
 
-void PointerDereferenceOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void PointerDereferenceOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }
 
-void PointerCreationOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void PointerCreationOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }
 
-void UnaryMinusOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void UnaryMinusOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

@@ -16,7 +16,7 @@ private:
 public:
     ALetOperatorNode(const _<ExpressionNode>& target, const AVector<_<INode>>& code) : mTarget(target), mCode(code) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const _<ExpressionNode>& getTarget() const {
         return mTarget;

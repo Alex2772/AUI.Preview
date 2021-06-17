@@ -12,7 +12,7 @@
 
 void LayoutVisitor::visitNode(const ConstructorDeclarationNode& node) {
     for (auto& n : node.getCode()) {
-        n->acceptVisitor(this);
+        n->acceptVisitor(*this);
     }
 }
 
@@ -20,7 +20,7 @@ void LayoutVisitor::visitNode(const OperatorCallNode& node) {
     if (node.getCallee() == "setContents") {
         for (auto& x : node.getArgs()) {
             ViewVisitor uiBuilder;
-            x->acceptVisitor(&uiBuilder);
+            x->acceptVisitor(uiBuilder);
             if (auto container = _cast<AViewContainer>(uiBuilder.getView())) {
                 mContainer->setContents(container);
             }
@@ -39,7 +39,7 @@ void LayoutVisitor::visitNode(const OperatorCallNode& node) {
                     return mNode;
                 }
             } v;
-            node.getArgs().first()->acceptVisitor(&v);
+            node.getArgs().first()->acceptVisitor(v);
             if (v.getNode()) {
                 if (v.getNode()->getArgs().empty() && v.getNode()->getCallee() == "_new") {
                     auto layoutName = v.getNode()->getTemplateArg();
@@ -50,7 +50,7 @@ void LayoutVisitor::visitNode(const OperatorCallNode& node) {
     } else if (node.getCallee() == "addView") {
         if (node.getArgs().size() == 1) {
             ViewVisitor v;
-            node.getArgs().first()->acceptVisitor(&v);
+            node.getArgs().first()->acceptVisitor(v);
             if (v.getView()) {
                 mContainer->addView(v.getView());
             }

@@ -18,7 +18,7 @@ public:
     ExplicitInitializerListCtorNode(const AString& className, const AVector<_<ExpressionNode>>& args) : mClassName(className),
                                                                                                  mArgs(args) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     const AString& getClassName() const {
         return mClassName;

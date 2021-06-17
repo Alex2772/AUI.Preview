@@ -5,6 +5,6 @@
 #include "TernaryOperatorNode.h"
 #include "INodeVisitor.h"
 
-void TernaryOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void TernaryOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

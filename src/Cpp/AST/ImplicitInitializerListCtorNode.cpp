@@ -5,6 +5,6 @@
 #include "ImplicitInitializerListCtorNode.h"
 #include "INodeVisitor.h"
 
-void ImplicitInitializerListCtorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void ImplicitInitializerListCtorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }

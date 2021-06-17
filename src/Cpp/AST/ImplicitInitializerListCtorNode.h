@@ -16,7 +16,7 @@ private:
 public:
     ImplicitInitializerListCtorNode(const AVector<_<ExpressionNode>>& elements) : mElements(elements) {}
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 
     [[nodiscard]] const AVector<_<ExpressionNode>>& getElements() const {
         return mElements;

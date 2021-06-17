@@ -19,7 +19,7 @@ public:
         return mString;
     }
 
-    void acceptVisitor(INodeVisitor* v) override;
+    void acceptVisitor(INodeVisitor& v) override;
 };
 
 

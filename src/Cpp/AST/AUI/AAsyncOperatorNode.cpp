@@ -5,6 +5,6 @@
 #include "AAsyncOperatorNode.h"
 #include <Cpp/AST/INodeVisitor.h>
 
-void AAsyncOperatorNode::acceptVisitor(INodeVisitor* v) {
-    v->visitNode(*this);
+void AAsyncOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
 }
