@@ -7,7 +7,8 @@
 #include <AUI/View/AButton.h>
 #include <AUI/Platform/ADesktop.h>
 #include <Cpp/Cpp.h>
-#include <Visitor/MyVisitor.h>
+#include <Visitor/LayoutVisitor.h>
+#include <AUI/Traits/strings.h>
 
 using namespace ass;
 
@@ -27,8 +28,15 @@ MainWindow::MainWindow():
             })).connect(&AListView::selectionChanged, me::updatePreview),
             _new<ASpacer>(),
         } << ".side_panel",
-        Stacked {
-            mDisplayWrapper = _new<AViewContainer>() << ".build_area"
+        Vertical {
+            Stacked {
+                mDisplayWrapper = _new<AViewContainer>() << ".build_area"
+            } with_style { Expanding {2, 2} },
+
+            // bottom panel
+            Horizontal {
+                mPerformanceLabel = _new<ALabel>(),
+            } with_style { BackgroundSolid { 0xeaeaea_rgb } },
         },
     });
 
@@ -47,10 +55,16 @@ void MainWindow::updatePreview() {
     }
     Project project = ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow());
     async {
+        using namespace std::chrono;
+        auto before1 = high_resolution_clock::now().time_since_epoch();
         auto ast = Cpp::parseCode(project.path);
+        auto after1 = high_resolution_clock::now().time_since_epoch();
         ui {
-            MyVisitor v;
+            auto before2 = high_resolution_clock::now().time_since_epoch();
+            LayoutVisitor v;
             ast->visit(&v);
+            auto after2 = high_resolution_clock::now().time_since_epoch();
+            mPerformanceLabel->setText("Parse: {}ms"_as.format((duration_cast<milliseconds>(after1 - before1 + after2 - before2)).count()));
             mDisplayWrapper->setLayout(_new<AStackedLayout>());
             auto view = v.getContainer();
             mDisplayWrapper->addView(view);

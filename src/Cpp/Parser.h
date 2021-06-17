@@ -10,9 +10,27 @@
 #include <AUI/Reflect/AClass.h>
 #include <Cpp/AST/VariableDeclarationNode.h>
 #include <Cpp/AST/ExpressionNode.h>
+#include <AUI/Util/EnumUtil.h>
+
+ENUM_INT(RequiredPriority) {
+    ANY,
+
+    COMPARE_OPERATORS, // ==, !=, <=, >=, <, >
+
+    LOW_PRIORITY, // for +, -, |, ||
+    HIGH_PRIORITY, // for *, /, &, &&
+
+    /**
+     * Parse expressions only with highest priority (unary operators, member access, functions call, etc...)
+     */
+    UNARY,
+
+};
 
 class Parser {
 private:
+
+    unsigned mErrorCount = 0;
     AVector<AnyToken> mTokens;
     AVector<AnyToken>::iterator mIterator = mTokens.begin();
 
@@ -65,7 +83,8 @@ private:
      */
     AVector<_<INode>> parseCodeBlock();
 
-    _<ExpressionNode> parseExpression();
+
+    _<ExpressionNode> parseExpression(RequiredPriority requiredPriority = RequiredPriority::ANY);
 
 public:
     Parser(const AVector<AnyToken>& tokens) : mTokens(tokens) {}

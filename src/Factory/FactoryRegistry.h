@@ -8,6 +8,7 @@
 #include <AUI/Common/AString.h>
 #include <AUI/Common/AMap.h>
 #include "IFactory.h"
+#include <AUI/Traits/iterators.h>
 
 class FactoryRegistry {
 private:
@@ -26,6 +27,18 @@ public:
     [[nodiscard]]
     const AVector<_unique<IFactory>>& getFactoriesForTypeName(const AString& typeName) {
         return mFactories.at(typeName);
+    }
+
+    [[nodiscard]]
+    _<AObject> create(const AString& typeName, const AVector<_<ExpressionNode>>& args) {
+        for (auto& f : aui::reverse_iterator_wrap(mFactories.at(typeName))) {
+            try {
+                return f->create(args);
+            } catch (...) {
+
+            }
+        }
+        return nullptr;
     }
 };
 

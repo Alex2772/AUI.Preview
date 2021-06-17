@@ -47,3 +47,13 @@ public:
 };
 
 
+
+
+class UnaryMinusOperatorNode: public UnaryOperatorNode {
+public:
+    using UnaryOperatorNode::UnaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+

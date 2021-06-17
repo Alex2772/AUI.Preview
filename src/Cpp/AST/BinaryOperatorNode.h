@@ -54,3 +54,60 @@ public:
 
     void acceptVisitor(INodeVisitor* v) override;
 };
+
+class LogicalOrOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class LogicalAndOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class BitwiseOrOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+
+class ModOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class BinaryPlusOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class BinaryMinusOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class EqualsOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};
+
+class NotEqualsOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor* v) override;
+};

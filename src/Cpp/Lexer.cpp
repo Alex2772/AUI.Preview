@@ -22,17 +22,37 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         break;
 
                     case '!': {
-                        result << LogicalNotToken{};
+                        if (mTokenizer.readChar() == '=') {
+                            // not equal
+                            result << NotEqualToken{};
+                        } else {
+                            // assignment or equal
+                            result << LogicalNotToken{};
+                            mTokenizer.reverseByte();
+                        }
                         break;
                     }
 
-                    case '&': { // reference, lambda capture
-                        result << AmpersandToken{};
+                    case '&': {
+                        if (mTokenizer.readChar() == '&') {
+                            // binary and
+                            result << LogicalAndToken{};
+                        } else {
+                            // reference, lambda capture
+                            result << AmpersandToken{};
+                            mTokenizer.reverseByte();
+                        }
                         break;
                     }
 
-                    case '=': { // equality, lambda capture
-                        result << EqualToken{};
+                    case '=': {
+                        if (mTokenizer.readChar() == '=') {
+                            result << DoubleEqualToken{};
+                        } else {
+                            // assignment, lambda capture
+                            result << EqualToken{};
+                            mTokenizer.reverseByte();
+                        }
                         break;
                     }
 
@@ -144,6 +164,22 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                     case ';': {
                         // COLON
                         result << SemicolonToken{};
+
+                        break;
+                    }
+
+                    case '%': {
+                        // mod
+                        result << ModToken{};
+                    }
+
+                    case '|': {
+                        if (mTokenizer.readChar() == '|') {
+                            result << LogicalOrToken{};
+                        } else {
+                            result << BitwiseOrToken{};
+                            mTokenizer.reverseByte();
+                        }
 
                         break;
                     }

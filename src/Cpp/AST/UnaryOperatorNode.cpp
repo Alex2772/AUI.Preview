@@ -21,3 +21,7 @@ void PointerDereferenceOperatorNode::acceptVisitor(INodeVisitor* v) {
 void PointerCreationOperatorNode::acceptVisitor(INodeVisitor* v) {
     v->visitNode(*this);
 }
+
+void UnaryMinusOperatorNode::acceptVisitor(INodeVisitor* v) {
+    v->visitNode(*this);
+}

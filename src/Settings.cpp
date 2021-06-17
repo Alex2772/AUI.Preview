@@ -21,6 +21,9 @@ Settings::Settings() {
         for (auto& p : settings["projects"].asArray()) {
             Project project;
             project.readJson(p);
+            if (project.path.empty()) {
+                continue;
+            }
             ProjectsRepository::inst().getModel() << std::move(project);
         }
     } catch (...) {

@@ -20,8 +20,10 @@
 #include <Cpp/AST/ImplicitInitializerListCtorNode.h>
 #include <Cpp/AST/AUI/AAsyncOperatorNode.h>
 #include <Cpp/AST/TernaryOperatorNode.h>
+#include <Cpp/AST/IfOperatorNode.h>
 #include "Parser.h"
 
+class Terminated {};
 template<typename variant, typename type>
 struct index_of {
 private:
@@ -46,81 +48,85 @@ constexpr size_t got = index_of<AnyToken , type>::value;
 
 AVector<_<INode>> Parser::parse() {
     AVector<_<INode>> nodes;
-    for (; mIterator != mTokens.end(); ++mIterator) {
-        try {
-            // here we should find #includes and function definitions
-            switch (mIterator->index()) {
-                case got<PreprocessorDirectiveToken>: {
-                    break;
-                }
-                case got<SemicolonToken>: {
-                    break;
-                }
-                case got<KeywordToken>: {
-                    if (parseUsing()) break;
-                    break;
-                }
-                case got<IdentifierToken>: {
-                    // variable or function definition
-                    auto name1 = std::get<IdentifierToken>(*mIterator).value();
-                    ++mIterator;
-                    switch (mIterator->index()) {
-                        case got<DoubleColonToken>:
-                            // class constructor definition
-                            ++mIterator;
+    try {
+        for (; mIterator != mTokens.end(); ++mIterator) {
+            try {
+                // here we should find #includes and function definitions
+                switch (mIterator->index()) {
+                    case got<PreprocessorDirectiveToken>: {
+                        break;
+                    }
+                    case got<SemicolonToken>: {
+                        break;
+                    }
+                    case got<KeywordToken>: {
+                        if (parseUsing()) break;
+                        break;
+                    }
+                    case got<IdentifierToken>: {
+                        // variable or function definition
+                        auto name1 = std::get<IdentifierToken>(*mIterator).value();
+                        ++mIterator;
+                        switch (mIterator->index()) {
+                            case got<DoubleColonToken>:
+                                // class constructor definition
+                                ++mIterator;
 
-                            switch (mIterator->index()) {
-                                case got<IdentifierToken>: {
-                                    auto name2 = std::get<IdentifierToken>(*mIterator).value();
-                                    ++mIterator;
-                                    auto args = parseFunctionDeclarationArgs();
-                                    auto initializerList = parseConstructorInitializerList();
-                                    auto codeBlock = parseCodeBlock();
-                                    nodes << _new<ConstructorDeclarationNode>(name1, name2, args, name1, initializerList, codeBlock);
-                                    break;
+                                switch (mIterator->index()) {
+                                    case got<IdentifierToken>: {
+                                        auto name2 = std::get<IdentifierToken>(*mIterator).value();
+                                        ++mIterator;
+                                        auto args = parseFunctionDeclarationArgs();
+                                        auto initializerList = parseConstructorInitializerList();
+                                        auto codeBlock = parseCodeBlock();
+                                        nodes << _new<ConstructorDeclarationNode>(name1, name2, args, name1,
+                                                                                  initializerList, codeBlock);
+                                        //break;
+                                        return nodes;
+                                    }
+
+                                    default:
+                                        reportUnexpectedErrorAndSkip("expected name token for constructor definition");
                                 }
 
-                                default:
-                                    reportUnexpectedErrorAndSkip("expected name token for constructor definition");
-                            }
+                                break;
 
-                            break;
+                            case got<IdentifierToken>:
+                                // variable or function definition
+                                // name1    name2
+                                // result_t function_or_class_name
+                                auto name2 = std::get<IdentifierToken>(*mIterator).value();
+                                ++mIterator;
 
-                        case got<IdentifierToken>:
-                            // variable or function definition
-                            // name1    name2
-                            // result_t function_or_class_name
-                            auto name2 = std::get<IdentifierToken>(*mIterator).value();
-                            ++mIterator;
+                                switch (mIterator->index()) {
+                                    case got<SemicolonToken>:
+                                    case got<EqualToken>:
+                                        // variable definition which we not interested in
+                                        skipUntilSemicolon();
+                                        break;
 
-                            switch (mIterator->index()) {
-                                case got<SemicolonToken>:
-                                case got<EqualToken>:
-                                    // variable definition which we not interested in
-                                    skipUntilSemicolon();
-                                    break;
+                                    case got<LParToken>:
+                                        // function definition
+                                        parseFunctionDeclarationArgs();
+                                        break;
 
-                                case got<LParToken>:
-                                    // function definition
-                                    parseFunctionDeclarationArgs();
-                                    break;
+                                    case got<DoubleColonToken>:
+                                        // class constructor definition
 
-                                case got<DoubleColonToken>:
-                                    // class constructor definition
+                                        break;
+                                }
 
-                                    break;
-                            }
+                                break;
+                        }
 
-                            break;
+                        break;
                     }
-
-                    break;
+                    default:
+                        reportError("unexpected \"" + getTokenName() + "\"");
                 }
-                default:
-                    reportError("unexpected \"" + getTokenName() + "\"");
-            }
-        } catch (const AException& ) {}
-    }
+            } catch (const AException&) {}
+        }
+    } catch (Terminated) {}
     return nodes;
 }
 
@@ -226,6 +232,37 @@ AVector<_<INode>> Parser::parseCodeBlock() {
                         result << _new<ReturnOperatorNode>(parseExpression());
                         break;
 
+                    case KeywordToken::USING:
+                        skipUntilSemicolon();
+                        break;
+
+                    case KeywordToken::IF: {
+                        expect<LParToken>();
+                        ++mIterator;
+                        auto condition = parseExpression();
+                        expect<RParToken>();
+                        ++mIterator;
+                        auto codeBlock = parseCodeBlock();
+                        result << _new<IfOperatorNode>(condition, codeBlock);
+                        break;
+                    }
+
+                    case KeywordToken::TRY: {
+                        auto codeBlock = parseCodeBlock();
+                        try {
+                            if (std::get<KeywordToken>(*mIterator).getType() != KeywordToken::CATCH) {
+                                throw AException{};
+                            }
+                        } catch (...) {
+                            reportUnexpectedErrorAndSkip("expected catch keyword after try block");
+                        }
+                        ++mIterator;
+                        parseCallArgs();
+                        parseCodeBlock();
+
+                        break;
+                    }
+
                     default:
                         result << parseExpression();
                 }
@@ -244,7 +281,7 @@ AVector<_<INode>> Parser::parseCodeBlock() {
     return result;
 }
 
-_<ExpressionNode> Parser::parseExpression() {
+_<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
     _<ExpressionNode> result = nullptr;
     for (; mIterator != mTokens.end(); ) {
         switch (mIterator->index()) {
@@ -261,6 +298,7 @@ _<ExpressionNode> Parser::parseExpression() {
                         ++mIterator;
                         break;
 
+                    case KeywordToken::CONST:
                     case KeywordToken::AUTO:
                         result = parseVariableDeclaration();
                         break;
@@ -273,6 +311,11 @@ _<ExpressionNode> Parser::parseExpression() {
                     case KeywordToken::FALSE:
                         result = _new<VariableReferenceNode>("false");
                         ++mIterator;
+                        break;
+
+                    case KeywordToken::USING:
+                        // we are not interested in using, skip until ;
+                        skipUntilSemicolon();
                         break;
 
                     default:
@@ -288,11 +331,16 @@ _<ExpressionNode> Parser::parseExpression() {
             case got<IdentifierToken>: {
                 auto name1 = std::get<IdentifierToken>(*mIterator).value();
                 if (result == nullptr) {
-                    if (name1 == "async") {
-                        // AUI async syntax
+                    if (name1 == "async" || name1 == "ui") {
+                        // AUI async or ui syntax
                         ++mIterator;
                         auto codeBlock = parseCodeBlock();
                         result = _new<AAsyncOperatorNode>(codeBlock);
+                    } else if (name1 == "repeat") {
+                        // AUI repat syntax
+                        ++mIterator;
+                        parseCallArgs();
+                        parseCodeBlock();
                     } else {
                         // variable reference
                         result = parseIdentifier();
@@ -310,6 +358,25 @@ _<ExpressionNode> Parser::parseExpression() {
                     }
                 }
                 break;
+            }
+
+            case got<PlusToken>: {
+                if (requiredPriority > RequiredPriority::LOW_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                return _new<BinaryPlusOperatorNode>(result, parseExpression());
+            }
+
+            case got<MinusToken>: {
+                if (requiredPriority > RequiredPriority::LOW_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                if (result) {
+                    return _new<BinaryMinusOperatorNode>(result, parseExpression());
+                }
+                return _new<UnaryMinusOperatorNode>(parseExpression());
             }
 
             case got<DoubleColonToken>:
@@ -338,10 +405,16 @@ _<ExpressionNode> Parser::parseExpression() {
                 break;
 
             case got<LShiftToken>:
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
                 ++mIterator;
                 return _new<LShiftOperatorNode>(result, parseExpression());
 
             case got<RShiftToken>:
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
                 ++mIterator;
                 return _new<RShiftOperatorNode>(result, parseExpression());
 
@@ -351,9 +424,58 @@ _<ExpressionNode> Parser::parseExpression() {
                 break;
             }
 
-            case got<EqualToken>: {
+            case got<EqualToken>: { // assignment
                 ++mIterator;
                 return _new<AssignmentOperatorNode>(result, parseExpression());
+            }
+
+            case got<DoubleEqualToken>: { // equals check operator
+                ++mIterator;
+                if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
+                    return result;
+                }
+                return _new<EqualsOperatorNode>(result, parseExpression());
+            }
+
+
+            case got<NotEqualToken>: { // not equals check operator
+                ++mIterator;
+                if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
+                    return result;
+                }
+                return _new<NotEqualsOperatorNode>(result, parseExpression());
+            }
+
+            case got<ModToken>: {
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                return _new<ModOperatorNode>(result, parseExpression());
+            }
+
+            case got<BitwiseOrToken>: {
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                return _new<BitwiseOrOperatorNode>(result, parseExpression());
+            }
+
+            case got<LogicalOrToken>: {
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                return _new<LogicalOrOperatorNode>(result, parseExpression());
+            }
+
+            case got<LogicalAndToken>: {
+                if (requiredPriority > RequiredPriority::HIGH_PRIORITY) {
+                    return result;
+                }
+                ++mIterator;
+                return _new<LogicalAndOperatorNode>(result, parseExpression());
             }
 
             case got<LogicalNotToken>: {
@@ -362,19 +484,19 @@ _<ExpressionNode> Parser::parseExpression() {
                     reportError("logical not is not a binary operator");
                     throw AException{};
                 }
-                result = _new<LogicalNotOperatorNode>(parseExpression());
+                result = _new<LogicalNotOperatorNode>(parseExpression(RequiredPriority::UNARY));
                 break;
             }
 
             case got<AsteriskToken>: { // pointer dereference
                 ++mIterator;
-                result = _new<PointerDereferenceOperatorNode>(parseExpression());
+                result = _new<PointerDereferenceOperatorNode>(parseExpression(RequiredPriority::UNARY));
                 break;
             }
 
             case got<AmpersandToken>: { // variable pointer creation
                 ++mIterator;
-                result = _new<PointerCreationOperatorNode>(parseExpression());
+                result = _new<PointerCreationOperatorNode>(parseExpression(RequiredPriority::UNARY));
                 break;
             }
 
@@ -384,7 +506,7 @@ _<ExpressionNode> Parser::parseExpression() {
             }
 
             default:
-                 if (result == nullptr) {
+                if (result == nullptr) {
                     reportUnexpectedErrorAndSkip("not an expression");
                     throw AException{};
                 }
@@ -585,6 +707,11 @@ void Parser::reportError(const AString& message) {
 
 
     ALogger::err(":" + AString::number(lineNumber) + " " + message);
+    ++mErrorCount;
+    if (mErrorCount > 10) {
+        ALogger::err("Too many errors, terminating");
+        throw Terminated{};
+    }
 }
 
 _<ExpressionNode> Parser::parseMemberAccess() {

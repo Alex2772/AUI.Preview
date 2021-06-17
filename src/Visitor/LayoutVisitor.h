@@ -6,16 +6,17 @@
 
 
 #include <Cpp/AST/INodeVisitor.h>
+#include <AUI/Traits/strings.h>
 
-class MyVisitor: public INodeVisitor {
+class LayoutVisitor: public INodeVisitor {
 private:
     class ViewContainer: public AViewContainer {
-        friend class MyVisitor;
+        friend class LayoutVisitor;
     };
 
     _<ViewContainer> mContainer;
 public:
-    MyVisitor();
+    LayoutVisitor();
 
     void visitNode(const ConstructorDeclarationNode& node) override;
     void visitNode(const OperatorCallNode& node) override;

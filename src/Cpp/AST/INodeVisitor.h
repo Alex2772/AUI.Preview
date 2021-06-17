@@ -22,11 +22,17 @@
 #include "UnaryOperatorNode.h"
 #include "VariableDeclarationNode.h"
 #include "VariableReferenceNode.h"
+#include "IfOperatorNode.h"
 #include "AUI/AAsyncOperatorNode.h"
 #include "AUI/ALetOperatorNode.h"
 
 class INodeVisitor {
 public:
+    // compare operators
+    virtual void visitNode(const EqualsOperatorNode& node) {};
+    virtual void visitNode(const NotEqualsOperatorNode& node) {};
+
+    // some shit
     virtual void visitNode(const ConstructorDeclarationNode& node) {};
     virtual void visitNode(const LShiftOperatorNode& node) {};
     virtual void visitNode(const RShiftOperatorNode& node) {};
@@ -53,4 +59,13 @@ public:
     virtual void visitNode(const VariableReferenceNode& node) {};
     virtual void visitNode(const AAsyncOperatorNode& node) {};
     virtual void visitNode(const ALetOperatorNode& node) {};
+    virtual void visitNode(const LogicalAndOperatorNode& node) {};
+    virtual void visitNode(const LogicalOrOperatorNode& node) {};
+    virtual void visitNode(const BitwiseOrOperatorNode& node) {};
+    virtual void visitNode(const ModOperatorNode& node) {};
+    virtual void visitNode(const BinaryMinusOperatorNode& node) {};
+    virtual void visitNode(const BinaryPlusOperatorNode& node) {};
+    virtual void visitNode(const UnaryMinusOperatorNode& node) {};
+    virtual void visitNode(const IfOperatorNode& node) {};
+
 };

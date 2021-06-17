@@ -11,11 +11,13 @@
 #include <AUI/View/AButton.h>
 #include <AUI/Model/AListModelAdapter.h>
 #include <AUI/Model/AListModel.h>
+#include <AUI/Util/UIBuildingHelpers.h>
 
 AUI_ENTRY {
     Autumn::put(_new<FactoryRegistry>());
 
     Autumn::get<FactoryRegistry>()->registerFactory({
+        // VIEWS =======================================================================================================
         new factory<AView>,
 
         new factory<ASpacer>,
@@ -35,6 +37,11 @@ AUI_ENTRY {
             });
             return _new<AListView>(AAdapter::make<AString>(exampleModel, [](const AString& s){ return s;}));
         }),
+
+        // LAYOUTS =====================================================================================================
+        new factory<AHorizontalLayout>,
+        new factory<AVerticalLayout>,
+        new factory<AStackedLayout>,
     });
 
     Settings::inst();

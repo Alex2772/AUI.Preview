@@ -28,6 +28,12 @@
 #include <Cpp/Token/SemicolonToken.h>
 #include <Cpp/Token/DoubleColonToken.h>
 #include <Cpp/Token/KeywordToken.h>
+#include <Cpp/Token/BitwiseOrToken.h>
+#include <Cpp/Token/LogicalOrToken.h>
+#include <Cpp/Token/LogicalAndToken.h>
+#include <Cpp/Token/ModToken.h>
+#include <Cpp/Token/NotEqualToken.h>
+#include <Cpp/Token/DoubleEqualToken.h>
 
 using AnyToken = std::variant<IdentifierToken,
                               NumberToken,
@@ -57,4 +63,10 @@ using AnyToken = std::variant<IdentifierToken,
                               PreprocessorDirectiveToken,
                               SemicolonToken,
                               DoubleColonToken,
-                              KeywordToken>;
+                              KeywordToken,
+                              BitwiseOrToken,
+                              LogicalAndToken,
+                              LogicalOrToken,
+                              ModToken,
+                              DoubleEqualToken,
+                              NotEqualToken>;

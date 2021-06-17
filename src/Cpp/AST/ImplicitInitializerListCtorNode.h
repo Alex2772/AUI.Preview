@@ -11,12 +11,16 @@
 
 class ImplicitInitializerListCtorNode: public ExpressionNode {
 private:
-    AVector<_<ExpressionNode>> mArgs;
+    AVector<_<ExpressionNode>> mElements;
 
 public:
-    ImplicitInitializerListCtorNode(const AVector<_<ExpressionNode>>& args) : mArgs(args) {}
+    ImplicitInitializerListCtorNode(const AVector<_<ExpressionNode>>& elements) : mElements(elements) {}
 
     void acceptVisitor(INodeVisitor* v) override;
+
+    [[nodiscard]] const AVector<_<ExpressionNode>>& getElements() const {
+        return mElements;
+    }
 };
 
 
