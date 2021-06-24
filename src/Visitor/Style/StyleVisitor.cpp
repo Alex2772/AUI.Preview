@@ -5,6 +5,10 @@
 #include "StyleVisitor.h"
 #include "StyleRuleBlockVisitor.h"
 
+StyleVisitor::StyleVisitor() {
+    mStylesheet = _new<AStylesheet>();
+}
+
 void StyleVisitor::visitNode(const StructClassDefinition& node) {
     for (auto& n : node.getNodes()) {
         n->acceptVisitor(*this);
@@ -32,5 +36,9 @@ void StyleVisitor::visitNode(const ImplicitInitializerListCtorNode& node) {
     for (auto& block : node.getElements()) {
         StyleRuleBlockVisitor v;
         block->acceptVisitor(v);
+        if (auto& x = v.getRule()) {
+            mStylesheet->addRule(std::move(*x));
+        }
     }
 }
+

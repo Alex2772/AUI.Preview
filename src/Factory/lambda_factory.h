@@ -19,7 +19,7 @@ public:
     }
 
     bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
-        return args.empty();
+        return true;
     }
 
     AString getTypeName() override {

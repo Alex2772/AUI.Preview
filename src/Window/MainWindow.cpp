@@ -31,7 +31,7 @@ MainWindow::MainWindow():
         } << ".side_panel",
         Vertical {
             Stacked {
-                mDisplayWrapper = _new<AViewContainer>() << ".build_area"
+                mDisplayWrapper = _new<StyleWrapperContainer>() << ".build_area"
             } with_style { Expanding {2, 2} },
 
             // bottom panel
@@ -54,27 +54,29 @@ void MainWindow::updatePreview() {
     if (mProjectsListView->getSelectionModel().empty()) {
         return;
     }
-    Project project = ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow());
+    _<Project> project = Autumn::put(_new<Project>(ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow())));
+
+    mDisplayWrapper->setStylesheet(nullptr);
     async {
         // find src/ folder
-        for (auto p = project.path; !p.empty(); p = p.parent()) {
-            if (p.isDirectoryExists() && p.filename() == "src") {
-                auto styleSheetCpp = p["Style.cpp"];
-                if (styleSheetCpp.isRegularFileExists()) {
-                    // stylesheets
-                    async {
-                        StyleVisitor v;
-                        auto ast = Cpp::parseCode(styleSheetCpp);
-                        ast->visit(v);
-                    };
-                }
-            }
+        auto root = project->getRoot();
+        auto styleSheetCpp = root["src"]["Style.cpp"];
+        if (styleSheetCpp.isRegularFileExists()) {
+            // stylesheets
+            async {
+                StyleVisitor v;
+                auto ast = Cpp::parseCode(styleSheetCpp);
+                ast->visit(v);
+                auto s = v.getStylesheet();
+                ui {
+                    mDisplayWrapper->setStylesheet(s);
+                };
+            };
         }
-        return;
 
         using namespace std::chrono;
         auto before1 = high_resolution_clock::now().time_since_epoch();
-        auto ast = Cpp::parseCode(project.path);
+        auto ast = Cpp::parseCode(project->path);
         auto after1 = high_resolution_clock::now().time_since_epoch();
         ui {
             auto before2 = high_resolution_clock::now().time_since_epoch();

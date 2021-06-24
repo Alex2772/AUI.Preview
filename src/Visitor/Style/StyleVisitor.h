@@ -6,9 +6,15 @@
 
 
 #include <Cpp/AST/INodeVisitor.h>
+#include <AUI/ASS/AStylesheet.h>
 
 class StyleVisitor: public INodeVisitor {
+private:
+    _<AStylesheet> mStylesheet;
+
 public:
+    StyleVisitor();
+
     /**
      * struct Style { ... }
      * @param node
@@ -41,6 +47,11 @@ public:
      * @param node
      */
     void visitNode(const ImplicitInitializerListCtorNode& node) override;
+
+    [[nodiscard]]
+    const _<AStylesheet>& getStylesheet() const {
+        return mStylesheet;
+    }
 };
 
 

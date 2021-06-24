@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <Cpp/Parser.h>
+#include <Model/Project.h>
 #include "converter.h"
 
 namespace aui::preview {
@@ -13,7 +15,13 @@ namespace aui::preview {
         static ass::unset_wrap<AString> from_vm(const _<ExpressionNode>& n) {
             StringVisitor v;
             n->acceptVisitor(v);
-            return v.getValue();
+            auto str = *v.getValue();
+            if (str.startsWith(':')) {
+                // url; replace it
+                auto projectRoot = Autumn::get<Project>()->getRoot();
+                return "file://"_as + projectRoot["assets"][AString(str.begin() + 1, str.end())];
+            }
+            return str;
         }
     };
 

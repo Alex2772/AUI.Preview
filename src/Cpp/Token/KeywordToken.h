@@ -7,6 +7,14 @@
 #include <AUI/Common/AString.h>
 #include "IToken.h"
 
+#ifdef CONST
+#undef CONST
+#undef TRUE
+#undef FALSE
+#undef DELETE
+#undef THIS
+#endif
+
 class KeywordToken: public IToken {
 public:
     enum Type {

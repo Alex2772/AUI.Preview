@@ -16,11 +16,11 @@ namespace selector {
         const std::type_info& mReferenceTypeInfo;
 
     public:
-        Type(const _<AObject>& o): mReferenceTypeInfo(typeid(o.get())) {
+        Type(const _<AObject>& o): mReferenceTypeInfo(typeid(*o.get())) {
         }
 
         bool isPossiblyApplicable(AView* view) override {
-            return typeid(view) == mReferenceTypeInfo;
+            return typeid(*view) == mReferenceTypeInfo;
         }
 
     };

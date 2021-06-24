@@ -25,6 +25,11 @@ private:
 
 public:
     void visitNode(const ImplicitInitializerListCtorNode& node) override;
+
+
+    [[nodiscard]] const _unique<Rule>& getRule() const {
+        return mRule;
+    }
 };
 
 

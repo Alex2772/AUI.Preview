@@ -63,6 +63,8 @@ AUI_ENTRY {
         new rule_factory<BackgroundImage>::with_args<unset_wrap<AString>, unset_wrap<AColor>, unset_wrap<Repeat>, unset_wrap<Sizing>>,
         new rule_factory<BackgroundImage>::with_args<unset_wrap<AString>, unset_wrap<AColor>, unset_wrap<Repeat>, unset_wrap<Sizing>, unset_wrap<glm::vec2>>,
 
+        new rule_factory<BackgroundSolid>::with_args<AColor>,
+
         // Padding
         new rule_factory<Padding>::with_args<dimension>,
         new rule_factory<Padding>::with_args<dimension, dimension>,
@@ -74,7 +76,7 @@ AUI_ENTRY {
     });
 
     Settings::inst();
-    _new<MainWindow>()->show();
+    Autumn::put(_new<MainWindow>())->show();
     return 0;
 };
 
