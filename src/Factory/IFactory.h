@@ -8,8 +8,11 @@
 #include <AUI/Common/SharedPtrTypes.h>
 #include <AUI/Common/AVector.h>
 
+
+template<typename F>
 class IFactory {
 public:
-    virtual _<AObject> create(const AVector<_<ExpressionNode>>& args) = 0;
+    virtual _<F> create(const AVector<_<ExpressionNode>>& args) = 0;
+    virtual bool isApplicable(const AVector<_<ExpressionNode>>& args) = 0;
     virtual AString getTypeName() = 0;
 };

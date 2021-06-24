@@ -236,7 +236,7 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         } else if (isdigit(c)) {
                             // number
                             mTokenizer.reverseByte();
-                            result << NumberToken{mTokenizer.readInt()};
+                            result << NumberToken{mTokenizer.readUInt()};
                         } else {
                             reportError(
                                     "Invalid token '" + AString(1, c) + "' at " + AString::number(mTokenizer.getRow()) +

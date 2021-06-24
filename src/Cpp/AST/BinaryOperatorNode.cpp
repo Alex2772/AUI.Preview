@@ -52,3 +52,15 @@ void EqualsOperatorNode::acceptVisitor(INodeVisitor& v) {
 void NotEqualsOperatorNode::acceptVisitor(INodeVisitor& v) {
     v.visitNode(*this);
 }
+
+void GreaterOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
+}
+
+void LessOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
+}
+
+void StaticMemberAccessOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
+}

@@ -8,16 +8,16 @@
 #include <AUI/View/ALabel.h>
 #include <AUI/Util/UIBuildingHelpers.h>
 #include "ViewVisitor.h"
-#include "StringVisitor.h"
+#include "Visitor/StringVisitor.h"
 #include "ContainerListVisitor.h"
-#include "Replicator.h"
+#include "Visitor/Replicator.h"
 #include <AUI/Traits/strings.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
         StringVisitor c;
         node.getRight()->acceptVisitor(c);
-        auto assName = c.getString();
+        auto assName = *c.getValue();
         node.getLeft()->acceptVisitor(*this);
         if (mView != nullptr) {
             mView << assName;
@@ -42,7 +42,7 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
         assert(mView == nullptr);
 
         try {
-            mView = _cast<AView>(Autumn::get<FactoryRegistry>()->create(node.getTemplateArg(), node.getArgs()));
+            mView = _cast<AView>(Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs()));
         } catch (...) {
 
         }

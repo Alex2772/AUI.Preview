@@ -5,8 +5,8 @@
 #include "StringVisitor.h"
 
 void StringVisitor::visitNode(const StringNode& node) {
-    mText = node.getString();
-    mValid = true;
+    mValue = node.getString();
+    mIsValid = true;
 }
 
 

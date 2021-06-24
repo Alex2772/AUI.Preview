@@ -6,7 +6,7 @@
 #include <AUI/Util/UIBuildingHelpers.h>
 #include <Factory/FactoryRegistry.h>
 #include "LayoutVisitor.h"
-#include "Replicator.h"
+#include "Visitor/Replicator.h"
 #include "ViewVisitor.h"
 
 

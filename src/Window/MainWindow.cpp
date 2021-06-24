@@ -7,8 +7,9 @@
 #include <AUI/View/AButton.h>
 #include <AUI/Platform/ADesktop.h>
 #include <Cpp/Cpp.h>
-#include <Visitor/LayoutVisitor.h>
+#include <Visitor/Layout/LayoutVisitor.h>
 #include <AUI/Traits/strings.h>
+#include <Visitor/Style/StyleVisitor.h>
 
 using namespace ass;
 
@@ -55,6 +56,22 @@ void MainWindow::updatePreview() {
     }
     Project project = ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow());
     async {
+        // find src/ folder
+        for (auto p = project.path; !p.empty(); p = p.parent()) {
+            if (p.isDirectoryExists() && p.filename() == "src") {
+                auto styleSheetCpp = p["Style.cpp"];
+                if (styleSheetCpp.isRegularFileExists()) {
+                    // stylesheets
+                    async {
+                        StyleVisitor v;
+                        auto ast = Cpp::parseCode(styleSheetCpp);
+                        ast->visit(v);
+                    };
+                }
+            }
+        }
+        return;
+
         using namespace std::chrono;
         auto before1 = high_resolution_clock::now().time_since_epoch();
         auto ast = Cpp::parseCode(project.path);

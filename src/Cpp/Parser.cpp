@@ -21,6 +21,8 @@
 #include <Cpp/AST/AUI/AAsyncOperatorNode.h>
 #include <Cpp/AST/TernaryOperatorNode.h>
 #include <Cpp/AST/IfOperatorNode.h>
+#include <Cpp/AST/StructClassDefinition.h>
+#include <Cpp/AST/BoolNode.h>
 #include "Parser.h"
 
 class Terminated {};
@@ -60,7 +62,19 @@ AVector<_<INode>> Parser::parse() {
                         break;
                     }
                     case got<KeywordToken>: {
-                        if (parseUsing()) break;
+                        switch (std::get<KeywordToken>(*mIterator).getType()) {
+                            case KeywordToken::USING:
+                                parseUsing();
+                                break;
+
+                            case KeywordToken::CLASS:
+                            case KeywordToken::STRUCT: { // class or struct definition
+                                ++mIterator;
+                                nodes << parseStructClassDefinition();
+                                break;
+                            }
+
+                        }
                         break;
                     }
                     case got<IdentifierToken>: {
@@ -155,6 +169,8 @@ AVector<_<VariableDeclarationNode>> Parser::parseFunctionDeclarationArgs() {
                 throw AException{};
         }
     }
+    reportUnexpectedEof();
+    throw AException{};
 }
 AVector<_<ExpressionNode>> Parser::parseCallArgs() {
     expect<LParToken>();
@@ -304,12 +320,12 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                         break;
 
                     case KeywordToken::TRUE:
-                        result = _new<VariableReferenceNode>("true");
+                        result = _new<BoolNode>(true);
                         ++mIterator;
                         break;
 
                     case KeywordToken::FALSE:
-                        result = _new<VariableReferenceNode>("false");
+                        result = _new<BoolNode>(false);
                         ++mIterator;
                         break;
 
@@ -379,7 +395,17 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 return _new<UnaryMinusOperatorNode>(parseExpression());
             }
 
-            case got<DoubleColonToken>:
+            case got<DoubleColonToken>: {
+                // variable access or method call
+                ++mIterator;
+                if (result == nullptr) {
+                    reportError("field access requires object");
+                    throw AException{};
+                }
+
+                result = _new<StaticMemberAccessOperatorNode>(result, parseMemberAccess());
+                break;
+            }
             case got<PointerFieldAccessToken>:
             case got<FieldAccessToken>: {
                 // variable access or method call
@@ -429,7 +455,7 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 return _new<AssignmentOperatorNode>(result, parseExpression());
             }
 
-            case got<DoubleEqualToken>: { // equals check operator
+            case got<DoubleEqualToken>: { // == check operator
                 ++mIterator;
                 if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
                     return result;
@@ -437,8 +463,23 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 return _new<EqualsOperatorNode>(result, parseExpression());
             }
 
+            case got<LAngleBracketToken>: { // < check operator
+                ++mIterator;
+                if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
+                    return result;
+                }
+                return _new<LessOperatorNode>(result, parseExpression());
+            }
 
-            case got<NotEqualToken>: { // not equals check operator
+            case got<RAngleBracketToken>: { // > check operator
+                ++mIterator;
+                if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
+                    return result;
+                }
+                return _new<GreaterOperatorNode>(result, parseExpression());
+            }
+
+            case got<NotEqualToken>: { // != check operator
                 ++mIterator;
                 if (requiredPriority > RequiredPriority::COMPARE_OPERATORS) {
                     return result;
@@ -788,10 +829,83 @@ _<ExpressionNode> Parser::parseIdentifier() {
     return result;
 }
 
-unsigned Parser::getCurrentLineNumber() const {
+unsigned Parser::getCurrentLineNumber() {
+    if (mIterator >= mTokens.end()) {
+        mIterator = mTokens.end() - 1;
+    }
     unsigned lineNumber = 0;
     std::visit([&](auto&& v) {
         lineNumber = v.getLineNumber();
     }, *mIterator);
     return lineNumber;
+}
+
+_<INode> Parser::parseStructClassDefinition() {
+    expect<IdentifierToken>();
+    auto className = std::get<IdentifierToken>(*mIterator).value();
+    AVector<_<INode>> items;
+    ++mIterator;
+    switch (mIterator->index()) {
+        case got<SemicolonToken>: {
+            // definition
+            ++mIterator;
+            break;
+        }
+
+        case got<LCurlyBracketToken>: {
+            // declaration
+            ++mIterator;
+            [&] {
+                while (mIterator != mTokens.end()) {
+                    switch (mIterator->index()) {
+                        case got<RCurlyBracketToken>: { // close
+                            ++mIterator;
+                            return;
+                        }
+                        case got<IdentifierToken>: {
+                            auto name1 = std::get<IdentifierToken>(*mIterator).value();
+                            ++mIterator;
+                            if (name1 == className) {
+                                // class constructor
+                                auto args = parseFunctionDeclarationArgs();
+                                switch (mIterator->index()) {
+                                    case got<ColonToken>:
+                                    case got<LCurlyBracketToken>: {
+                                        // declaration
+                                        auto initializerList = parseConstructorInitializerList();
+                                        auto code = parseCodeBlock();
+                                        items << _new<ConstructorDeclarationNode>(className, className, args, className, initializerList, code);
+                                        break;
+                                    }
+                                    case got<SemicolonToken>: {
+                                        // definition
+                                        // ignore it
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }();
+
+            switch (mIterator->index()) {
+                case got<SemicolonToken>: {
+                    ++mIterator;
+                    break;
+                }
+
+                case got<IdentifierToken>: { // in-place variable declaration
+                    ++mIterator; // ignore it
+                    expect<SemicolonToken>();
+                    ++mIterator;
+                }
+            }
+
+            break;
+        }
+    }
+
+    return _new<StructClassDefinition>(className, items);
 }

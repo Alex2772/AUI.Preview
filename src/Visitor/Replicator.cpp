@@ -7,5 +7,5 @@
 #include <AUI/Autumn/Autumn.h>
 
 _<ALayout> Replicator::layout(const AString& layoutName) {
-    return _cast<ALayout>(Autumn::get<FactoryRegistry>()->create(layoutName, {}));
+    return _cast<ALayout>(Autumn::get<FactoryRegistry<AObject>>()->create(layoutName, {}));
 }

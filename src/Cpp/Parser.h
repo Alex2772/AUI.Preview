@@ -11,6 +11,7 @@
 #include <Cpp/AST/VariableDeclarationNode.h>
 #include <Cpp/AST/ExpressionNode.h>
 #include <AUI/Util/EnumUtil.h>
+#include <AUI/Common/AException.h>
 
 ENUM_INT(RequiredPriority) {
     ANY,
@@ -48,7 +49,7 @@ private:
             return std::get<T>(*mIterator);
         }
         reportUnexpectedErrorAndSkip("expected "_as + AClass<T>::name());
-        throw AException();
+        throw ::AException();
     }
 
 
@@ -57,6 +58,7 @@ private:
     _<ExpressionNode> parseIdentifier();
     _<ExpressionNode> parseTernary(const _<ExpressionNode>& condition);
     AVector<_<INode>> parseConstructorInitializerList();
+    _<INode> parseStructClassDefinition() ;
 
     /**
      * Parses modifiers typename variablename
@@ -91,8 +93,7 @@ public:
 
     AVector<_<INode>> parse();
 
-    unsigned getCurrentLineNumber() const;
-
+    unsigned getCurrentLineNumber();
 };
 
 

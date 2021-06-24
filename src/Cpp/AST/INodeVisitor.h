@@ -23,6 +23,8 @@
 #include "VariableDeclarationNode.h"
 #include "VariableReferenceNode.h"
 #include "IfOperatorNode.h"
+#include "StructClassDefinition.h"
+#include "BoolNode.h"
 #include "AUI/AAsyncOperatorNode.h"
 #include "AUI/ALetOperatorNode.h"
 
@@ -37,6 +39,7 @@ public:
     virtual void visitNode(const LShiftOperatorNode& node) {};
     virtual void visitNode(const RShiftOperatorNode& node) {};
     virtual void visitNode(const MemberAccessOperatorNode& node) {};
+    virtual void visitNode(const StaticMemberAccessOperatorNode& node) {};
     virtual void visitNode(const AssignmentOperatorNode& node) {};
     virtual void visitNode(const ExplicitInitializerListCtorNode& node) {};
     virtual void visitNode(const ImplicitInitializerListCtorNode& node) {};
@@ -67,5 +70,9 @@ public:
     virtual void visitNode(const BinaryPlusOperatorNode& node) {};
     virtual void visitNode(const UnaryMinusOperatorNode& node) {};
     virtual void visitNode(const IfOperatorNode& node) {};
+    virtual void visitNode(const StructClassDefinition& node) {};
+    virtual void visitNode(const GreaterOperatorNode& node) {};
+    virtual void visitNode(const LessOperatorNode& node) {};
+    virtual void visitNode(const BoolNode& node) {};
 
 };

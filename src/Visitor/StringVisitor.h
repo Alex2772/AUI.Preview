@@ -7,23 +7,11 @@
 
 #include <Cpp/AST/INodeVisitor.h>
 #include <AUI/Common/AException.h>
+#include "UnsetWrapVisitor.h"
 
-class StringVisitor: public INodeVisitor {
-private:
-    AString mText;
-    bool mValid = false;
-
+class StringVisitor: public UnsetWrapVisitor<AString> {
 public:
     void visitNode(const StringNode& node) override;
-
-
-    [[nodiscard]]
-    const AString& getString() const {
-        if (!mValid) {
-            throw AException("not a string");
-        }
-        return mText;
-    }
 
     /**
      * << "..." let { ... } workaround

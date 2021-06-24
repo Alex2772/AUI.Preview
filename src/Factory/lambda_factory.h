@@ -1,11 +1,13 @@
 //
-// Created by alex2 on 6/16/2021.
+// Created by alex2 on 6/20/2021.
 //
 
 #pragma once
 
+#include "object_factory.h"
+
 template<typename Lambda>
-class factory_lambda: public IFactory {
+class factory_lambda: public IObjectFactory {
 private:
     Lambda mLambda;
 
@@ -16,7 +18,11 @@ public:
         return (_<AObject>)mLambda();
     }
 
+    bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
+        return args.empty();
+    }
+
     AString getTypeName() override {
-        return AClass<decltype(mLambda())::stored_t>::name();
+        return AClass<typename decltype(mLambda())::stored_t>::name();
     }
 };

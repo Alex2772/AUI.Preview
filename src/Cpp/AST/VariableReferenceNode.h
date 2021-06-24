@@ -16,6 +16,11 @@ public:
     VariableReferenceNode(const AString& variableName) : mVariableName(variableName) {}
 
     void acceptVisitor(INodeVisitor& v) override;
+
+    [[nodiscard]]
+    const AString& getVariableName() const {
+        return mVariableName;
+    }
 };
 
 

@@ -10,34 +10,42 @@
 #include "IFactory.h"
 #include <AUI/Traits/iterators.h>
 
+template<typename F>
 class FactoryRegistry {
 private:
-    AMap<AString, AVector<_unique<IFactory>>> mFactories;
+    AMap<AString, AVector<_unique<IFactory<F>>>> mFactories;
 
 
 public:
-    void registerFactory(IFactory* factory);
+    void registerFactory(IFactory<F>* factory) {
+        auto typeName = factory->getTypeName();
+        mFactories[typeName] << _unique<IFactory<F>>(factory);
+    }
 
-    void registerFactory(const AVector<IFactory*>& factories) {
+    void registerFactory(const AVector<IFactory<F>*>& factories) {
         for (auto& factory : factories) {
             registerFactory(factory);
         }
     }
 
     [[nodiscard]]
-    const AVector<_unique<IFactory>>& getFactoriesForTypeName(const AString& typeName) {
+    const AVector<_unique<IFactory<F>>>& getFactoriesForTypeName(const AString& typeName) {
         return mFactories.at(typeName);
     }
 
     [[nodiscard]]
-    _<AObject> create(const AString& typeName, const AVector<_<ExpressionNode>>& args) {
-        for (auto& f : aui::reverse_iterator_wrap(mFactories.at(typeName))) {
-            try {
-                return f->create(args);
-            } catch (...) {
+    _<F> create(const AString& typeName, const AVector<_<ExpressionNode>>& args) {
+        try {
+            for (auto& f : aui::reverse_iterator_wrap(mFactories.at(typeName))) {
+                try {
+                    if (f->isApplicable(args)) {
+                        return f->create(args);
+                    }
+                } catch (...) {
 
+                }
             }
-        }
+        } catch (...) {}
         return nullptr;
     }
 };

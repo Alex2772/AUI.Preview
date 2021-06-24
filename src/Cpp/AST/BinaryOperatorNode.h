@@ -47,6 +47,12 @@ public:
 
     void acceptVisitor(INodeVisitor& v) override;
 };
+class StaticMemberAccessOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor& v) override;
+};
 
 class AssignmentOperatorNode: public BinaryOperatorNode {
 public:
@@ -106,6 +112,20 @@ public:
 };
 
 class NotEqualsOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor& v) override;
+};
+
+class GreaterOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor& v) override;
+};
+
+class LessOperatorNode: public BinaryOperatorNode {
 public:
     using BinaryOperatorNode::BinaryOperatorNode;
 

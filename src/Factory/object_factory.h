@@ -5,15 +5,15 @@
 #pragma once
 
 
-#include "IFactory.h"
-
 #include <Converter/converter.h>
 #include <tuple>
 #include <AUI/Common/SharedPtrTypes.h>
 #include <AUI/Reflect/AClass.h>
 
+using IObjectFactory = IFactory<AObject>;
+
 template<typename T>
-class factory: public IFactory {
+class object_factory: public IObjectFactory {
 public:
 
 public:
@@ -25,8 +25,12 @@ public:
         return AClass<T>::name();
     }
 
+    bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
+        return args.empty();
+    }
+
     template<typename... Args>
-    class with_args : public IFactory {
+    class with_args : public IObjectFactory {
     private:
 
         template<unsigned i, typename FArg, typename... FArgs>
@@ -40,6 +44,10 @@ public:
 
     public:
 
+        bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
+            return args.size() == sizeof...(Args);
+        }
+
         AString getTypeName() override {
             return AClass<T>::name();
         }
@@ -48,7 +56,7 @@ public:
             std::tuple<Args...> storage;
             fill_storage<0, Args...>(storage, args);
             //return _new<T>(aui::preview::converter<Args>::from_vm(args[0])...);
-            return std::apply([](Args... args) { return (_<AObject>)_new<T>(std::forward<Args>(args)...); }, storage);
+            return (std::apply)([](Args... args) { return (_<AObject>)_new<T>(std::forward<Args>(args)...); }, storage);
         }
     };
 };
