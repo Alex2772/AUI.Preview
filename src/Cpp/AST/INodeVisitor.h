@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <Cpp/AST/AUI/AWithStyleOperatorNode.h>
 #include "ConstructorDeclarationNode.h"
 #include "BinaryOperatorNode.h"
 #include "ExplicitInitializerListCtorNode.h"
@@ -74,5 +75,6 @@ public:
     virtual void visitNode(const GreaterOperatorNode& node) {};
     virtual void visitNode(const LessOperatorNode& node) {};
     virtual void visitNode(const BoolNode& node) {};
+    virtual void visitNode(const AWithStyleOperatorNode& node) {};
 
 };

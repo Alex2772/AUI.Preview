@@ -23,6 +23,7 @@
 #include <Cpp/AST/IfOperatorNode.h>
 #include <Cpp/AST/StructClassDefinition.h>
 #include <Cpp/AST/BoolNode.h>
+#include <Cpp/AST/AUI/AWithStyleOperatorNode.h>
 #include "Parser.h"
 
 class Terminated {};
@@ -367,6 +368,11 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                         ++mIterator;
                         auto codeBlock = parseCodeBlock();
                         return _new<ALetOperatorNode>(result, codeBlock);
+                    } else if (name1 == "with_style") {
+                        // AUI with_style syntax
+                        ++mIterator;
+                        auto codeBlock = parseCurlyBracketsArgs();
+                        return _new<AWithStyleOperatorNode>(result, codeBlock);
                     } else {
                         // operator literal
                         result = _new<OperatorLiteralNode>(name1, result);

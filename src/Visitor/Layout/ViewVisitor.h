@@ -30,7 +30,17 @@ public:
      */
     void visitNode(const MemberAccessOperatorNode& node) override;
 
+    /**
+     * Handle view let { ... }
+     * @param node
+     */
     void visitNode(const ALetOperatorNode& node) override;
+
+    /**
+     * Handle view with_style { ... }
+     * @param node
+     */
+    void visitNode(const AWithStyleOperatorNode& node) override;
 
     /**
      * Handle ... = _new<...>() case

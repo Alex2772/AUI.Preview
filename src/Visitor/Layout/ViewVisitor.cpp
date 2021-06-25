@@ -12,6 +12,8 @@
 #include "ContainerListVisitor.h"
 #include "Visitor/Replicator.h"
 #include <AUI/Traits/strings.h>
+#include <Visitor/Style/RuleVisitor.h>
+#include <Visitor/Style/StyleRuleBlockVisitor.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
@@ -88,4 +90,21 @@ void ViewVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
         }
     }
     mView = view;
+}
+
+void ViewVisitor::visitNode(const AWithStyleOperatorNode& node) {
+    INodeVisitor::visitNode(node);
+    node.getTarget()->acceptVisitor(*this);
+    if (mView) {
+        for (auto& i : node.getArgs()) {
+            RuleVisitor v;
+            i->acceptVisitor(v);
+            RuleWithoutSelector r;
+            if (auto rule = v.getRule()) {
+                r.addDeclaration(rule.get());
+                StyleRuleBlockVisitor::ourDeclarationStorage << rule;
+                mView->setCustomAss(r);
+            }
+        }
+    }
 }

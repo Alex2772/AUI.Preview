@@ -20,11 +20,11 @@
 class StyleRuleBlockVisitor: public INodeVisitor {
 private:
     _unique<Rule> mRule;
-    static AVector<_<ass::decl::IDeclarationBase>> ourDeclarationStorage;
 
 
 public:
     void visitNode(const ImplicitInitializerListCtorNode& node) override;
+    static AVector<_<ass::decl::IDeclarationBase>> ourDeclarationStorage;
 
 
     [[nodiscard]] const _unique<Rule>& getRule() const {

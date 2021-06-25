@@ -55,6 +55,8 @@ AUI_ENTRY {
 
         // Expanding
         new rule_factory<Expanding>::with_args<bool>,
+        new rule_factory<Expanding>::with_args<unset_wrap<int>>,
+        new rule_factory<Expanding>::with_args<unset_wrap<int>, unset_wrap<int>>,
 
         // BackgroundImage
         new rule_factory<BackgroundImage>::with_args<AString>,

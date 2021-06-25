@@ -10,6 +10,7 @@
 #include <Visitor/Layout/LayoutVisitor.h>
 #include <AUI/Traits/strings.h>
 #include <Visitor/Style/StyleVisitor.h>
+#include <View/MyBuildArea.h>
 
 using namespace ass;
 
@@ -30,13 +31,11 @@ MainWindow::MainWindow():
             _new<ASpacer>(),
         } << ".side_panel",
         Vertical {
-            Stacked {
-                mDisplayWrapper = _new<StyleWrapperContainer>() << ".build_area"
-            } with_style { Expanding {2, 2} },
+            _new<MyBuildArea>( mDisplayWrapper = _new<StyleWrapperContainer>()),
 
             // bottom panel
             Horizontal {
-                mPerformanceLabel = _new<ALabel>(),
+                mPerformanceLabel = _new<ALabel>("Ready"),
             } with_style { BackgroundSolid { 0xeaeaea_rgb } },
         },
     });
