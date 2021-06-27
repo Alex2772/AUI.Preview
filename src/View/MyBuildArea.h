@@ -4,10 +4,9 @@
 
 #pragma once
 
+#include <AUI/View/ARulerArea.h>
 
-#include <AUI/View/AViewContainer.h>
-
-class MyBuildArea: public AViewContainer {
+class MyBuildArea: public ARulerArea {
 public:
     explicit MyBuildArea(const _<AView>& wrappedView);
 };
