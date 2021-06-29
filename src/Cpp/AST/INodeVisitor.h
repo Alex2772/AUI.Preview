@@ -13,7 +13,7 @@
 #include "LambdaNode.h"
 #include "MethodDeclarationNode.h"
 #include "NullptrNode.h"
-#include "NumberNode.h"
+#include "IntegerNode.h"
 #include "OperatorCallNode.h"
 #include "OperatorLiteralNode.h"
 #include "StringNode.h"
@@ -28,6 +28,8 @@
 #include "BoolNode.h"
 #include "AUI/AAsyncOperatorNode.h"
 #include "AUI/ALetOperatorNode.h"
+#include "TemplateOperatorTypenameNode.h"
+#include "FloatNode.h"
 
 class INodeVisitor {
 public:
@@ -48,7 +50,7 @@ public:
     virtual void visitNode(const LambdaNode& node) {};
     virtual void visitNode(const MethodDeclarationNode& node) {};
     virtual void visitNode(const NullptrNode& node) {};
-    virtual void visitNode(const NumberNode& node) {};
+    virtual void visitNode(const IntegerNode& node) {};
     virtual void visitNode(const OperatorCallNode& node) {};
     virtual void visitNode(const OperatorLiteralNode& node) {};
     virtual void visitNode(const StringNode& node) {};
@@ -76,5 +78,8 @@ public:
     virtual void visitNode(const LessOperatorNode& node) {};
     virtual void visitNode(const BoolNode& node) {};
     virtual void visitNode(const AWithStyleOperatorNode& node) {};
+    virtual void visitNode(const TemplateOperatorTypenameNode& node) {};
+    virtual void visitNode(const ArrayAccessOperatorNode& node) {};
+    virtual void visitNode(const FloatNode& node) {};
 
 };

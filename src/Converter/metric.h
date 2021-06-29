@@ -11,31 +11,18 @@ namespace aui::preview {
     template<>
     struct converter<ass::unset_wrap<AMetric>> {
         static ass::unset_wrap<AMetric> from_vm(const _<ExpressionNode>& n) {
-            class MetricVisitor: public INodeVisitor {
-            private:
-                AMetric mMetric;
-                bool mValid = false;
-
+            class MetricVisitor: public UnsetWrapVisitor<AMetric> {
             public:
-                void visitNode(const NumberNode& node) override {
+                void visitNode(const IntegerNode& node) override {
                     if (node.getNumber() != 0) {
                         auto str = ":{} metric can be only zero without unit"_as.format(node.getNumber());
                         ALogger::warn(str);
                         throw AException(str);
                     }
-                    mValid = true;
-                    mMetric = 0;
+                    mIsValid = true;
+                    mValue = 0;
                 }
 
-                [[nodiscard]]
-                const AMetric& getMetric() const {
-                    if (!mValid) {
-                        auto str = "metric can be only zero without unit";
-                        ALogger::warn(str);
-                        throw AException(str);
-                    }
-                    return mMetric;
-                }
 
                 void visitNode(const OperatorLiteralNode& node) override {
                     // _dp, _px, _pt
@@ -63,18 +50,23 @@ namespace aui::preview {
                     public:
                         NumberVisitor(AMetric::Unit& unit, AMetric& metric) : mUnit(unit), mMetric(metric) {}
 
-                        void visitNode(const NumberNode& node) override {
+                        void visitNode(const IntegerNode& node) override {
                             mMetric = AMetric(node.getNumber(), mUnit);
                         }
                     };
-                    NumberVisitor numberVisitor(unit, mMetric);
+                    AMetric v;
+                    NumberVisitor numberVisitor(unit, v);
+                    mValue = v;
+                    mIsValid = true;
                     node.getChild()->acceptVisitor(numberVisitor);
-                    mValid = true;
                 }
             };
             MetricVisitor v;
             n->acceptVisitor(v);
-            return v.getMetric();
+            return v.getValue();
         }
     };
+
+    template<>
+    struct converter<AMetric>: unset_wrap_converter<AMetric> {};
 }

@@ -64,3 +64,7 @@ void LessOperatorNode::acceptVisitor(INodeVisitor& v) {
 void StaticMemberAccessOperatorNode::acceptVisitor(INodeVisitor& v) {
     v.visitNode(*this);
 }
+
+void ArrayAccessOperatorNode::acceptVisitor(INodeVisitor& v) {
+    v.visitNode(*this);
+}

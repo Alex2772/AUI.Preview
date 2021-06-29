@@ -28,7 +28,7 @@ namespace aui::preview {
                         bool mIsValid = false;
 
                     public:
-                        void visitNode(const NumberNode& node) override {
+                        void visitNode(const IntegerNode& node) override {
                             mNumber = node.getNumber();
                             mIsValid = true;
                         }

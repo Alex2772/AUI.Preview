@@ -11,6 +11,9 @@
 
 
 void LayoutVisitor::visitNode(const ConstructorDeclarationNode& node) {
+    // SelectorVisitor.cpp:105
+    auto assName = "preview_" + node.getClassName();
+    mContainer << assName;
     for (auto& n : node.getCode()) {
         n->acceptVisitor(*this);
     }

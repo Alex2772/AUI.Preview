@@ -14,6 +14,10 @@
 #include <AUI/Model/AListModel.h>
 #include <AUI/Util/UIBuildingHelpers.h>
 #include <AUI/ASS/ASS.h>
+#include <AUI/View/AImageView.h>
+#include <AUI/View/AHDividerView.h>
+#include <AUI/View/AVDividerView.h>
+#include <AUI/View/ASelectableLabel.h>
 
 AUI_ENTRY {
     using namespace ass;
@@ -29,8 +33,16 @@ AUI_ENTRY {
         new object_factory<AButton>,
         new object_factory<AButton>::with_args<AString>,
 
+
+        new object_factory<AHDividerView>,
+        new object_factory<AVDividerView>,
+
         new object_factory<ALabel>,
         new object_factory<ALabel>::with_args<AString>,
+        new object_factory<ASelectableLabel>,
+        new object_factory<ASelectableLabel>::with_args<AString>,
+
+        new object_factory<AImageView>::with_args<_<AImage>>,
 
         new factory_lambda( [] {
             _<AListModel<AString>> exampleModel = _new<AListModel<AString>>({
@@ -53,10 +65,8 @@ AUI_ENTRY {
     Autumn::get<FactoryRegistry<ass::decl::IDeclarationBase>>()->registerFactory({
         // STYLESHEET RULES ============================================================================================
 
-        // Expanding
-        new rule_factory<Expanding>::with_args<bool>,
-        new rule_factory<Expanding>::with_args<unset_wrap<int>>,
-        new rule_factory<Expanding>::with_args<unset_wrap<int>, unset_wrap<int>>,
+        // BackgroundGradient
+        new rule_factory<BackgroundGradient>::with_args<std::nullptr_t>,
 
         // BackgroundImage
         new rule_factory<BackgroundImage>::with_args<AString>,
@@ -77,13 +87,15 @@ AUI_ENTRY {
         // BorderBottom
         new rule_factory<BorderBottom>::with_args<AMetric, AColor>,
 
-        // BorderBottom
+        // BoxShadow
         new rule_factory<BoxShadow>::with_args<AMetric,AMetric,AMetric, AMetric, AColor>,
         new rule_factory<BoxShadow>::with_args<AMetric,AMetric,AMetric, AColor>,
+        new rule_factory<BoxShadow>::with_args<std::nullptr_t>,
 
         // Expanding
-        new rule_factory<Expanding>::with_args<int>,
-        new rule_factory<Expanding>::with_args<int, int>,
+        new rule_factory<Expanding>::with_args<bool>,
+        new rule_factory<Expanding>::with_args<unset_wrap<int>>,
+        new rule_factory<Expanding>::with_args<unset_wrap<int>, unset_wrap<int>>,
 
         // FixedSize
         new rule_factory<FixedSize>::with_args<dimension, dimension>,

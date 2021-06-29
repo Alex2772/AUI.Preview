@@ -35,17 +35,15 @@ public:
 
     [[nodiscard]]
     _<F> create(const AString& typeName, const AVector<_<ExpressionNode>>& args) {
-        try {
-            for (auto& f : aui::reverse_iterator_wrap(mFactories.at(typeName))) {
-                try {
-                    if (f->isApplicable(args)) {
-                        return f->create(args);
-                    }
-                } catch (...) {
-
+        for (auto& f : aui::reverse_iterator_wrap(mFactories.at(typeName))) {
+            try {
+                if (f->isApplicable(args)) {
+                    return f->create(args);
                 }
+            } catch (...) {
+
             }
-        } catch (...) {}
+        }
         return nullptr;
     }
 };

@@ -5,7 +5,7 @@
 #include <AUI/Logging/ALogger.h>
 #include <Cpp/AST/ConstructorDeclarationNode.h>
 #include <Cpp/AST/StringNode.h>
-#include <Cpp/AST/NumberNode.h>
+#include <Cpp/AST/IntegerNode.h>
 #include <Cpp/AST/VariableReferenceNode.h>
 #include <Cpp/AST/OperatorLiteralNode.h>
 #include <Cpp/AST/OperatorCallNode.h>
@@ -24,6 +24,8 @@
 #include <Cpp/AST/StructClassDefinition.h>
 #include <Cpp/AST/BoolNode.h>
 #include <Cpp/AST/AUI/AWithStyleOperatorNode.h>
+#include <Cpp/AST/TemplateOperatorTypenameNode.h>
+#include <Cpp/AST/FloatNode.h>
 #include "Parser.h"
 
 class Terminated {};
@@ -431,8 +433,13 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 ++mIterator;
                 break;
 
-            case got<NumberToken>:
-                result = _new<NumberNode>(std::get<NumberToken>(*mIterator).value());
+            case got<IntegerToken>:
+                result = _new<IntegerNode>(std::get<IntegerToken>(*mIterator).value());
+                ++mIterator;
+                break;
+
+            case got<FloatToken>:
+                result = _new<FloatNode>(std::get<FloatToken>(*mIterator).value());
                 ++mIterator;
                 break;
 
@@ -451,8 +458,16 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 return _new<RShiftOperatorNode>(result, parseExpression());
 
             case got<LSquareBracketToken>: {
-                // lambda
-                result = parseLambda();
+                if (result == nullptr) {
+                    // lambda
+                    result = parseLambda();
+                } else {
+                    // array style [] access
+                    ++mIterator;
+                    result = _new<ArrayAccessOperatorNode>(result, parseExpression());
+                    expect<RSquareBracketToken>();
+                    ++mIterator;
+                }
                 break;
             }
 
@@ -818,8 +833,20 @@ _<ExpressionNode> Parser::parseIdentifier() {
             ++mIterator;
             expect<RAngleBracketToken>();
             ++mIterator;
-            auto callArgs = parseCallArgs();
-            result = _new<TemplateOperatorCallNode>(name1, callArgs, templateArgument);
+            switch (mIterator->index()) {
+                case got<LParToken>: {// template function call
+                    auto callArgs = parseCallArgs();
+                    result = _new<TemplateOperatorCallNode>(name1, callArgs, templateArgument);
+                    break;
+                }
+
+                case got<DoubleColonToken>: { // typename
+                    ++mIterator;
+                    result = _new<StaticMemberAccessOperatorNode>(_new<TemplateOperatorTypenameNode>(templateArgument, name1),
+                                                                  parseExpression());
+                    break;
+                }
+            }
             break;
         } // fallthrough
         case got<LParToken>: {

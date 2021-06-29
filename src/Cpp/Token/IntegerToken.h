@@ -11,12 +11,12 @@
 /**
  * Token describing some integer constant
  */
-class NumberToken: public IToken {
+class IntegerToken: public IToken {
 private:
     int64_t mNumber;
 
 public:
-    NumberToken(int64_t number): mNumber(number) {}
+    IntegerToken(int64_t number): mNumber(number) {}
 
     const char* getName() override;
 

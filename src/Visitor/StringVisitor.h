@@ -18,6 +18,12 @@ public:
      * @param node
      */
     void visitNode(const ALetOperatorNode& node) override;
+
+    /**
+     * _i18n handler
+     * @param node
+     */
+    void visitNode(const OperatorLiteralNode& node) override;
 };
 
 

@@ -131,3 +131,10 @@ public:
 
     void acceptVisitor(INodeVisitor& v) override;
 };
+
+class ArrayAccessOperatorNode: public BinaryOperatorNode {
+public:
+    using BinaryOperatorNode::BinaryOperatorNode;
+
+    void acceptVisitor(INodeVisitor& v) override;
+};

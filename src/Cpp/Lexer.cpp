@@ -5,6 +5,7 @@
 #include <AUI/Logging/ALogger.h>
 #include "Lexer.h"
 #include <algorithm>
+#include <Cpp/Token/FloatToken.h>
 
 AVector<AnyToken> Lexer::performLexAnalysis() {
     AVector<AnyToken> result;
@@ -236,7 +237,21 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         } else if (isdigit(c)) {
                             // number
                             mTokenizer.reverseByte();
-                            result << NumberToken{mTokenizer.readUInt()};
+                            int i = mTokenizer.readUInt();
+                            if (mTokenizer.readChar() == '.') {
+                                // float
+                                AString d10 = mTokenizer.readStringWhile(isdigit);
+                                auto v = (AString::number(i) + "." + d10).toDouble();
+                                result << FloatToken{v};
+
+                                if (mTokenizer.readChar() != 'f') {
+                                    mTokenizer.reverseByte();
+                                }
+
+                            } else {
+                                mTokenizer.reverseByte();
+                                result << IntegerToken{i};
+                            }
                         } else {
                             reportError(
                                     "Invalid token '" + AString(1, c) + "' at " + AString::number(mTokenizer.getRow()) +

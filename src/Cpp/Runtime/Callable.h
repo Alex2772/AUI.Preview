@@ -1,0 +1,13 @@
+//
+// Created by alex2 on 6/28/2021.
+//
+
+#pragma once
+
+#include <functional>
+#include <AUI/Common/AVector.h>
+#include <Cpp/AST/ExpressionNode.h>
+
+namespace Runtime {
+    using Callable = std::function<void(const AVector<_<ExpressionNode>>&)>;
+}

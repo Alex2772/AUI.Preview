@@ -10,15 +10,29 @@
 #include <AUI/ASS/ASS.h>
 
 void RuleVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
-    try {
-        auto rule = Autumn::get<FactoryRegistry<ass::decl::IDeclarationBase>>()->create(node.getClassName(), node.getArgs());
-        if (!rule) {
-            throw AException("no such rule");
+    auto& factories = Autumn::get<FactoryRegistry<ass::decl::IDeclarationBase>>()->getFactoriesForTypeName(node.getClassName());
+
+
+    AVector<std::pair<AString, AString>> errors;
+
+    for (auto& f : aui::reverse_iterator_wrap(factories)) {
+        try {
+            if (f->isApplicable(node.getArgs())) {
+                mRule = f->create(node.getArgs());
+                break;
+            }
+        } catch (const AException& e) {
+            errors.push_back({typeid(*f.get()).name(), e.getMessage()});
         }
-        mRule = rule;
-    } catch (const AException& e) {
-        ALogger::warn("Style.cpp:{} Failed to replicate rule {}: {}"_as.format(node.getLineNumber(),
-                                                                                   node.getClassName(),
-                                                                                   e.getMessage()));
+    }
+    if (mRule == nullptr) {
+        auto msg = ":{} failed to replicate rule {}: {}"_as.format(node.getLineNumber(), node.getClassName(), factories.empty()
+            ? "unknown rule"
+            : "no applicable candidate");
+        ALogger::warn(msg);
+
+        for (auto& f : errors) {
+            ALogger::warn("note: candidate {} dropped by SFINAE with reason: {}"_as.format(f.first, f.second));
+        }
     }
 }

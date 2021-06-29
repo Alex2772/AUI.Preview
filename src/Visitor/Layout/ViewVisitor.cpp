@@ -14,6 +14,7 @@
 #include <AUI/Traits/strings.h>
 #include <Visitor/Style/RuleVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
+#include <Cpp/Runtime/Context.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
@@ -33,6 +34,8 @@ void ViewVisitor::visitNode(const MemberAccessOperatorNode& node) {
 
 void ViewVisitor::visitNode(const ALetOperatorNode& node) {
     node.getTarget()->acceptVisitor(*this);
+
+    //RuntimeContext::PushLocal it("it", Variable(mView));
 }
 
 void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {

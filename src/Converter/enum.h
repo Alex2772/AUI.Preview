@@ -15,10 +15,7 @@ namespace aui::preview {
         static_assert(std::is_enum_v<enum_t>, "please use enum for enum_converter");
         static ass::unset_wrap<enum_t> from_vm(const _<ExpressionNode>& n) {
 
-            class EnumVisitor: public INodeVisitor {
-            private:
-                AString mEnumValue;
-                bool mIsValue = false;
+            class EnumVisitor: public UnsetWrapVisitor<AString> {
 
             public:
                 void visitNode(const StaticMemberAccessOperatorNode& node) override {
@@ -51,24 +48,26 @@ namespace aui::preview {
                         throw AException();
                     }
                     node.getRight()->acceptVisitor(v);
-                    mEnumValue = v.getValue();
-                    mIsValue = true;
+                    mValue = v.getValue();
+                    mIsValid = true;
                 }
 
                 [[nodiscard]]
-                const AString& getEnumValue() const {
-                    if (mIsValue) {
-                        return mEnumValue;
+                const ass::unset_wrap<AString>& getEnumValue() const {
+                    if (mIsValid) {
+                        return mValue;
                     }
                     throw AException("invalid enum");
                 }
             } v;
             n->acceptVisitor(v);
             auto enumName = v.getEnumValue();
-            if (auto c = AEnumerate<enum_t>::all().contains(enumName)) {
+            if (!enumName)
+                return {};
+            if (auto c = AEnumerate<enum_t>::all().contains(*enumName)) {
                 return c->second;
             }
-            throw AException("enum {} does not have value {}"_as.format(AClass<enum_t>::name(), enumName));
+            throw AException("enum {} does not have value {}"_as.format(AClass<enum_t>::name(), *enumName));
         }
     };
 }

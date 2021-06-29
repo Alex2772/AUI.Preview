@@ -16,7 +16,7 @@ namespace aui::preview {
             class NumberVisitor: public UnsetWrapVisitor<int> {
 
             public:
-                void visitNode(const NumberNode& node) override {
+                void visitNode(const IntegerNode& node) override {
                     mValue = node.getNumber();
                     mIsValid = true;
                 }

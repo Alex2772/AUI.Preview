@@ -10,6 +10,56 @@
 #include <Visitor/StringVisitor.h>
 #include <typeinfo>
 
+using namespace ass;
+
+struct MyParentSubSelector: public IAssSubSelector {
+private:
+    _<IAssSubSelector> l;
+    _<IAssSubSelector> r;
+
+public:
+    MyParentSubSelector(const _<IAssSubSelector>& l, const _<IAssSubSelector>& r) : l(l), r(r) {}
+
+    bool isPossiblyApplicable(AView* view) override {
+        if (r->isPossiblyApplicable(view)) {
+            for (AView* v = view->getParent(); v; v = v->getParent()) {
+                if (l->isPossiblyApplicable(v)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool isStateApplicable(AView* view) override {
+        if (r->isStateApplicable(view)) {
+            for (AView* v = view->getParent(); v; v = v->getParent()) {
+                if (l->isStateApplicable(v) && l->isPossiblyApplicable(v)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void setupConnections(AView* view, const _<AAssHelper>& helper) override {
+        if (r->isPossiblyApplicable(view)) {
+            for (AView* v = view->getParent(); v; v = v->getParent()) {
+                if (l->isPossiblyApplicable(v)) {
+                    l->setupConnections(v, helper);
+                    r->setupConnections(view, helper);
+                    return;
+                }
+            }
+        }
+        /**
+         * you should never reach here because this function is called only in case isPossiblyApplicable returned
+         * true
+         */
+        assert(0);
+    }
+};
+
 namespace selector {
     struct Type : virtual ass::IAssSubSelector {
     private:
@@ -42,21 +92,33 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
             auto referenceObject = Autumn::get<FactoryRegistry<AObject>>()->create(objectType, {});
             if (referenceObject) {
                 mSelector.addSubSelector(selector::Type(referenceObject));
-            } else {
-                /*
-                 * Unknown type may be a MainWindow class or some other class not provided by the user's project.
-                 * The workaround is use the classname as an prefix ASS class (ex.
-                 * MainWindow -> addAssName("preview_MainWindow"))
-                 */
-                auto assName = "preview_" + objectType;
-                mSelector.addSubSelector(ass::class_of(assName));
+                return;
             }
         } catch (const AException& e) {
             ALogger::warn("Could not create temporary object of type {}: {}"_as.format(objectType, e.getMessage()));
         }
+        /*
+         * Unknown type may be a MainWindow class or some other class not provided by the user's project.
+         * The workaround is use the classname as an prefix ASS class (ex.
+         * MainWindow -> addAssName("preview_MainWindow"))
+         */
+        auto assName = "preview_" + objectType;
+        mSelector.addSubSelector(ass::class_of(assName));
     } else {
         ALogger::warn("Unknown selector {}<{}> at {}"_as.format(node.getCallee(), node.getTemplateArg(), node.getLineNumber()));
     }
+}
+
+void SelectorVisitor::visitNode(const ArrayAccessOperatorNode& node) {
+    INodeVisitor::visitNode(node);
+}
+
+void SelectorVisitor::visitNode(const RShiftOperatorNode& node) {
+    SelectorVisitor c1;
+    node.getLeft()->acceptVisitor(c1);
+    node.getRight()->acceptVisitor(c1);
+
+    mSelector.addSubSelector(MyParentSubSelector(c1.mSelector.getSubSelectors().at(0), c1.mSelector.getSubSelectors().at(1)));
 }
 
 void SelectorVisitor::visitNode(const OperatorCallNode& node) {

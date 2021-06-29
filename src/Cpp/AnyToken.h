@@ -7,7 +7,7 @@
 #include <variant>
 #include <Cpp/Token/IToken.h>
 #include <Cpp/Token/IdentifierToken.h>
-#include <Cpp/Token/NumberToken.h>
+#include <Cpp/Token/IntegerToken.h>
 #include <Cpp/Token/ColonToken.h>
 #include <Cpp/Token/BracketsToken.h>
 #include <Cpp/Token/StringToken.h>
@@ -34,9 +34,10 @@
 #include <Cpp/Token/ModToken.h>
 #include <Cpp/Token/NotEqualToken.h>
 #include <Cpp/Token/DoubleEqualToken.h>
+#include <Cpp/Token/FloatToken.h>
 
 using AnyToken = std::variant<IdentifierToken,
-                              NumberToken,
+                              IntegerToken,
                               ColonToken,
                               LParToken,
                               RParToken,
@@ -69,4 +70,5 @@ using AnyToken = std::variant<IdentifierToken,
                               LogicalOrToken,
                               ModToken,
                               DoubleEqualToken,
-                              NotEqualToken>;
+                              NotEqualToken,
+                              FloatToken>;

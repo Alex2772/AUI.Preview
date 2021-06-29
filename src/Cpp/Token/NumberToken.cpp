@@ -2,8 +2,8 @@
 // Created by alex2 on 6/12/2021.
 //
 
-#include "NumberToken.h"
+#include "IntegerToken.h"
 
-const char* NumberToken::getName() {
+const char* IntegerToken::getName() {
     return "integer constant";
 }

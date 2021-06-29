@@ -11,6 +11,7 @@
 #include "repeat.h"
 #include "sizing.h"
 #include "string.h"
+#include "image.h"
 #include "vec2.h"
 #include "bool.h"
 #include "int.h"

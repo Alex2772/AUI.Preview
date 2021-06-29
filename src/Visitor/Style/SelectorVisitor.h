@@ -39,6 +39,10 @@ public:
     ass::AAssSelector& getSelector() {
         return mSelector;
     }
+
+    void visitNode(const RShiftOperatorNode& node) override;
+
+    void visitNode(const ArrayAccessOperatorNode& node) override;
 };
 
 
