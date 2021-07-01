@@ -10,6 +10,8 @@ template<typename Lambda>
 class factory_lambda: public IObjectFactory {
 private:
     Lambda mLambda;
+    using result_t = typename decltype(mLambda())::stored_t;
+
 
 public:
     factory_lambda(const Lambda& lambda) : mLambda(lambda) {}
@@ -22,7 +24,11 @@ public:
         return true;
     }
 
+    Runtime::IType& getType() override {
+        return get_class_descriptor<result_t>();
+    }
+
     AString getTypeName() override {
-        return AClass<typename decltype(mLambda())::stored_t>::name();
+        return AClass<result_t>::name();
     }
 };

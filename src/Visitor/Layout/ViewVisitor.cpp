@@ -15,6 +15,7 @@
 #include <Visitor/Style/RuleVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Cpp/Runtime/Context.h>
+#include <Classes/Class.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
@@ -35,7 +36,10 @@ void ViewVisitor::visitNode(const MemberAccessOperatorNode& node) {
 void ViewVisitor::visitNode(const ALetOperatorNode& node) {
     node.getTarget()->acceptVisitor(*this);
 
-    //RuntimeContext::PushLocal it("it", Variable(mView));
+    using namespace Runtime;
+    Variable v(get_class_descriptor<AView>(), mView);
+    Context::PushLocal it("it", v);
+    Autumn::get<Context>()->executeCodeBlock(node.getCode());
 }
 
 void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {
@@ -47,7 +51,7 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
         assert(mView == nullptr);
 
         try {
-            mView = _cast<AView>(Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs()));
+            mView = _cast<AView>(Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs())->getValue());
         } catch (...) {
 
         }
@@ -99,15 +103,20 @@ void ViewVisitor::visitNode(const AWithStyleOperatorNode& node) {
     INodeVisitor::visitNode(node);
     node.getTarget()->acceptVisitor(*this);
     if (mView) {
-        for (auto& i : node.getArgs()) {
-            RuleVisitor v;
-            i->acceptVisitor(v);
-            RuleWithoutSelector r;
-            if (auto rule = v.getRule()) {
-                r.addDeclaration(rule.get());
-                StyleRuleBlockVisitor::ourDeclarationStorage << rule;
-                mView->setCustomAss(r);
-            }
+        Replicator::setCustomAss(mView.get(), node.getArgs());
+    }
+}
+
+void ViewVisitor::visitNode(const VariableReferenceNode& node) {
+    INodeVisitor::visitNode(node);
+    auto var = Autumn::get<Runtime::Context>()->getLocalVariable(node.getVariableName());
+    if (var) {
+        if (auto view = _cast<AView>(var->getValue())) {
+            mView = view;
+        } else {
+            ALogger::warn(":{} variable '{}' is not an AView"_as.format(node.getLineNumber(), node.getVariableName()));
         }
+    } else {
+        ALogger::warn(":{} undefined variable '{}'"_as.format(node.getLineNumber(), node.getVariableName()));
     }
 }

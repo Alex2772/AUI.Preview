@@ -63,4 +63,6 @@ public:
      * @param node
      */
     void visitNode(const ExplicitInitializerListCtorNode& node) override;
+
+    void visitNode(const VariableReferenceNode& node) override;
 };

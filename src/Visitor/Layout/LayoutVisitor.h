@@ -7,12 +7,18 @@
 
 #include <Cpp/AST/INodeVisitor.h>
 #include <AUI/Traits/strings.h>
+#include <AUI/View/AViewContainer.h>
+
+class ViewContainerClass;
 
 class LayoutVisitor: public INodeVisitor {
-private:
+public:
     class ViewContainer: public AViewContainer {
         friend class LayoutVisitor;
+        friend class ViewContainerClass;
     };
+
+private:
 
     _<ViewContainer> mContainer;
 public:

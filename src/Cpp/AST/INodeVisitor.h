@@ -5,6 +5,7 @@
 #pragma once
 
 #include <Cpp/AST/AUI/AWithStyleOperatorNode.h>
+#include <Cpp/AST/AUI/ARepeatOperatorNode.h>
 #include "ConstructorDeclarationNode.h"
 #include "BinaryOperatorNode.h"
 #include "ExplicitInitializerListCtorNode.h"
@@ -81,5 +82,6 @@ public:
     virtual void visitNode(const TemplateOperatorTypenameNode& node) {};
     virtual void visitNode(const ArrayAccessOperatorNode& node) {};
     virtual void visitNode(const FloatNode& node) {};
+    virtual void visitNode(const ARepeatOperatorNode& node) {};
 
 };

@@ -11,6 +11,7 @@
 #include <AUI/Common/SharedPtrTypes.h>
 #include <AUI/Reflect/AClass.h>
 #include <AUI/ASS/ASS.h>
+#include <Converter/all.h>
 
 template<typename T>
 class rule_factory {
@@ -18,17 +19,6 @@ public:
 
     template<typename... Args>
     class with_args : public IFactory<ass::decl::IDeclarationBase> {
-    private:
-
-        template<unsigned i, typename FArg, typename... FArgs>
-        void fill_storage(std::tuple<Args...>& storage, const AVector<_<ExpressionNode>>& args) {
-            std::get<i>(storage) = aui::preview::converter<FArg>::from_vm(args.at(i));
-            fill_storage<i + 1, FArgs...>(storage, args);
-        }
-
-        template<unsigned i>
-        void fill_storage(std::tuple<Args...>& storage, const AVector<_<ExpressionNode>>& args) {}
-
     public:
         bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
             return args.size() == sizeof...(Args);
@@ -40,12 +30,12 @@ public:
         }
 
         _<ass::decl::IDeclarationBase> create(const AVector<_<ExpressionNode>>& args) override {
-            std::tuple<Args...> storage;
-            fill_storage<0, Args...>(storage, args);
+            aui::preview::call_helper<Args...> h;
+            h.feed(args);
             //return _new<T>(aui::preview::converter<Args>::from_vm(args[0])...);
             return (std::apply)([](Args... args) {
                 return (_<ass::decl::IDeclarationBase>)_new<ass::decl::Declaration<T>>(T{std::forward<Args>(args)...});
-            }, storage);
+            }, h.storage);
         }
     };
 };

@@ -4,6 +4,7 @@
 
 #include "AST.h"
 #include <AUI/Util/UIBuildingHelpers.h>
+#include <Cpp/Runtime/Context.h>
 
 _<AViewContainer> AST::run() {
     return Stacked {
@@ -12,7 +13,9 @@ _<AViewContainer> AST::run() {
 }
 
 void AST::visit(INodeVisitor& visitor) {
+    Autumn::put(_new<Runtime::Context>());
     for (auto& v : mNodes) {
         v->acceptVisitor(visitor);
     }
+    Autumn::put<Runtime::Context>(nullptr);
 }

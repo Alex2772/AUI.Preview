@@ -16,6 +16,9 @@ namespace Runtime {
     class Context : public INodeVisitor {
     private:
         AMap<AString, Variable> mLocalVariables;
+        Variable* mCalleeThis = nullptr;
+
+        bool doThisCall(const OperatorCallNode& call);
 
     public:
 
@@ -28,6 +31,15 @@ namespace Runtime {
             PushLocal(const AString& name, const Variable& v);
 
             ~PushLocal();
+        };
+
+        struct PushThis {
+        private:
+            Variable* mPreviousValue;
+
+        public:
+            PushThis(Variable* mNewValue);
+            ~PushThis();
         };
 
         /**
@@ -50,6 +62,8 @@ namespace Runtime {
             return std::nullopt;
         }
 
+        void visitNode(const AssignmentOperatorNode& node) override;
+
         /**
          * Executes code block with registered locals and functions.
          * @param codeBlock
@@ -58,6 +72,17 @@ namespace Runtime {
 
         void visitNode(const OperatorCallNode& node) override;
 
+        void visitNode(const MemberAccessOperatorNode& node) override;
 
+
+
+        /**
+         * The variable member function is called of
+         */
+        [[nodiscard]] Variable* getCalleeThis() const {
+            return mCalleeThis;
+        }
+
+        void visitNode(const ARepeatOperatorNode& node) override;
     };
 }

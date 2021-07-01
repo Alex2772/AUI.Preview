@@ -15,7 +15,8 @@ namespace Runtime {
         _<AObject> mValue;
 
     public:
-        Variable(IType* type, const _<AObject>& value) : mType(type), mValue(value) {}
+        Variable(): mType(nullptr) {}
+        Variable(IType& type, const _<AObject>& value) : mType(&type), mValue(value) {}
 
         [[nodiscard]] const _ <AObject>& getValue() const {
             return mValue;

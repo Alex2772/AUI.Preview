@@ -9,8 +9,10 @@
 #include <tuple>
 #include <AUI/Common/SharedPtrTypes.h>
 #include <AUI/Reflect/AClass.h>
+#include <Converter/all.h>
+#include <Cpp/Runtime/IType.h>
+#include <Classes/Class.h>
 
-using IObjectFactory = IFactory<AObject>;
 
 template<typename T>
 class object_factory: public IObjectFactory {
@@ -29,19 +31,12 @@ public:
         return args.empty();
     }
 
+    Runtime::IType& getType() override {
+        return get_class_descriptor<T>();
+    }
+
     template<typename... Args>
     class with_args : public IObjectFactory {
-    private:
-
-        template<unsigned i, typename FArg, typename... FArgs>
-        void fill_storage(std::tuple<Args...>& storage, const AVector<_<ExpressionNode>>& args) {
-            std::get<i>(storage) = aui::preview::converter<FArg>::from_vm(args.at(i));
-            fill_storage<i + 1, FArgs...>(storage, args);
-        }
-
-        template<unsigned i>
-        void fill_storage(std::tuple<Args...>& storage, const AVector<_<ExpressionNode>>& args) {}
-
     public:
 
         bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
@@ -52,11 +47,16 @@ public:
             return AClass<T>::name();
         }
 
+        Runtime::IType& getType() override {
+            return get_class_descriptor<T>();
+        }
+
         _<AObject> create(const AVector<_<ExpressionNode>>& args) override {
-            std::tuple<Args...> storage;
-            fill_storage<0, Args...>(storage, args);
+            aui::preview::call_helper<Args...> h;
+            h.feed(args);
+
             //return _new<T>(aui::preview::converter<Args>::from_vm(args[0])...);
-            return (std::apply)([](Args... args) { return (_<AObject>)_new<T>(std::forward<Args>(args)...); }, storage);
+            return (std::apply)([](Args... args) { return (_<AObject>)_new<T>(std::forward<Args>(args)...); }, h.storage);
         }
     };
 };

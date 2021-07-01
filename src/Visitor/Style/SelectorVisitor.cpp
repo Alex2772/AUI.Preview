@@ -89,7 +89,7 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
     if (node.getCallee() == "t" || node.getCallee() == "type_of") {
         auto objectType = node.getTemplateArg();
         try {
-            auto referenceObject = Autumn::get<FactoryRegistry<AObject>>()->create(objectType, {});
+            auto referenceObject = Autumn::get<FactoryRegistry<AObject>>()->create(objectType, {})->getValue();
             if (referenceObject) {
                 mSelector.addSubSelector(selector::Type(referenceObject));
                 return;

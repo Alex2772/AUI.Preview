@@ -21,6 +21,10 @@ namespace Runtime {
         bool isClass() override;
         IClass* asClass() override;
 
+        const Callable& getFunction(const AString& name) {
+            return mMemberFunctions.at(name);
+        }
+
         void registerFunction(const AString& name, const Callable& callable) {
             mMemberFunctions[name] = callable;
         }

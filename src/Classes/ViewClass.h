@@ -4,12 +4,16 @@
 
 #pragma once
 
+#include "ClassDescriptor.h"
+#include <Cpp/Runtime/Class.h>
+#include <AUI/View/AView.h>
 
-#include <Cpp/Runtime/IClass.h>
-
-class ViewClass: public Runtime::IClass {
+template<>
+struct class_descriptor<AView>: public Runtime::Class<AView> {
 public:
-    ViewClass();
+    class_descriptor();
 };
+
+
 
 

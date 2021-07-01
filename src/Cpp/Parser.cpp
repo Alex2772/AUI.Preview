@@ -26,6 +26,7 @@
 #include <Cpp/AST/AUI/AWithStyleOperatorNode.h>
 #include <Cpp/AST/TemplateOperatorTypenameNode.h>
 #include <Cpp/AST/FloatNode.h>
+#include <Cpp/AST/AUI/ARepeatOperatorNode.h>
 #include "Parser.h"
 
 class Terminated {};
@@ -358,8 +359,14 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                     } else if (name1 == "repeat") {
                         // AUI repat syntax
                         ++mIterator;
-                        parseCallArgs();
-                        parseCodeBlock();
+                        expect<LParToken>();
+                        ++mIterator;
+                        unsigned cnt = expect<IntegerToken>().value();
+                        ++mIterator;
+                        expect<RParToken>();
+                        ++mIterator;
+                        auto codeBlock = parseCodeBlock();
+                        return _new<ARepeatOperatorNode>(cnt, codeBlock);
                     } else {
                         // variable reference
                         result = parseIdentifier();

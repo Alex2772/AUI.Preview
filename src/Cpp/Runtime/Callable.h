@@ -9,5 +9,6 @@
 #include <Cpp/AST/ExpressionNode.h>
 
 namespace Runtime {
-    using Callable = std::function<void(const AVector<_<ExpressionNode>>&)>;
+    using CallArgs = AVector<_<ExpressionNode>>;
+    using Callable = std::function<void(const CallArgs&)>;
 }

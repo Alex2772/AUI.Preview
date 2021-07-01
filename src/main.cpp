@@ -18,6 +18,7 @@
 #include <AUI/View/AHDividerView.h>
 #include <AUI/View/AVDividerView.h>
 #include <AUI/View/ASelectableLabel.h>
+#include <AUI/View/APageView.h>
 
 AUI_ENTRY {
     using namespace ass;
@@ -36,6 +37,8 @@ AUI_ENTRY {
 
         new object_factory<AHDividerView>,
         new object_factory<AVDividerView>,
+
+        new object_factory<APageView>,
 
         new object_factory<ALabel>,
         new object_factory<ALabel>::with_args<AString>,
