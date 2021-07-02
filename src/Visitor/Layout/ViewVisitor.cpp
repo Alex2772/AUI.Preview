@@ -16,6 +16,7 @@
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Cpp/Runtime/Context.h>
 #include <Classes/Class.h>
+#include <Util/ICustomViewName.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
@@ -46,6 +47,21 @@ void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {
     node.getRight()->acceptVisitor(*this);
 }
 
+class ReplicateError: public ALabel, public ICustomViewName {
+public:
+    ReplicateError(const AString& text) : ALabel(text) {
+
+    }
+
+    ~ReplicateError() override {
+
+    }
+
+    AString getCustomViewName() override {
+        return getText();
+    }
+};
+
 void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
     if (node.getCallee() == "_new") {
         assert(mView == nullptr);
@@ -72,7 +88,9 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
     }
     if (mView == nullptr) {
         ALogger::warn(":{} Replicate error for {}"_as.format(node.getLineNumber(), node.getTemplateArg()));
-        mView = _new<ALabel>("<:{} replicate error {}>"_as.format(node.getLineNumber(), node.getTemplateArg()));
+        mView = _new<ReplicateError>("<:{} {}>"_as.format(node.getLineNumber(), node.getTemplateArg()));
+        mView->setCustomAss(TextAlign::CENTER);
+        mView << "preview_" + node.getTemplateArg();
     }
 }
 

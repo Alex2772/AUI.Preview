@@ -15,7 +15,7 @@ public:
             {
                 c(".side_panel"),
                 BackgroundSolid {0xffffff_rgb },
-                FixedSize { 200_dp, {} },
+                FixedSize { 300_dp, {} },
             },
             {
                 c("side_panel") >> t<AListView>(),

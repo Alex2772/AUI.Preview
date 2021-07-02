@@ -56,9 +56,9 @@ namespace aui::preview {
                     };
                     AMetric v;
                     NumberVisitor numberVisitor(unit, v);
+                    node.getChild()->acceptVisitor(numberVisitor);
                     mValue = v;
                     mIsValid = true;
-                    node.getChild()->acceptVisitor(numberVisitor);
                 }
             };
             MetricVisitor v;

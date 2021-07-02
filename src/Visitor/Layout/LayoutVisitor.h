@@ -8,6 +8,7 @@
 #include <Cpp/AST/INodeVisitor.h>
 #include <AUI/Traits/strings.h>
 #include <AUI/View/AViewContainer.h>
+#include <Util/ICustomViewName.h>
 
 class ViewContainerClass;
 
@@ -16,6 +17,8 @@ public:
     class ViewContainer: public AViewContainer {
         friend class LayoutVisitor;
         friend class ViewContainerClass;
+        friend class MainWindow;
+
     };
 
 private:
@@ -33,5 +36,6 @@ public:
         return mContainer;
     }
 };
+
 
 

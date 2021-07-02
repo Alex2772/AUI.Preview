@@ -43,6 +43,8 @@ public:
     void visitNode(const RShiftOperatorNode& node) override;
 
     void visitNode(const ArrayAccessOperatorNode& node) override;
+
+    void visitNode(const GreaterOperatorNode& node) override;
 };
 
 

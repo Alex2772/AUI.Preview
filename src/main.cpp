@@ -87,6 +87,9 @@ AUI_ENTRY {
         new rule_factory<Border>::with_args<std::nullptr_t>,
         new rule_factory<Border>::with_args<AMetric, AColor>,
 
+        // BorderRadius
+        new rule_factory<BorderRadius>::with_args<AMetric>,
+
         // BorderBottom
         new rule_factory<BorderBottom>::with_args<AMetric, AColor>,
 
@@ -117,7 +120,7 @@ AUI_ENTRY {
         new rule_factory<ImageRendering>::with_args<ImageRendering>,
 
         // LayoutSpacing
-        new rule_factory<LayoutSpacing>::with_args<LayoutSpacing>,
+        new rule_factory<LayoutSpacing>::with_args<AMetric>,
 
         // Margin
         new rule_factory<Margin>::with_args<dimension>,

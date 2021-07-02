@@ -12,6 +12,41 @@
 
 using namespace ass;
 
+struct MyDirectParentSubSelector: public IAssSubSelector {
+private:
+    _<IAssSubSelector> l;
+    _<IAssSubSelector> r;
+
+public:
+    MyDirectParentSubSelector(const _<IAssSubSelector>& l, const _<IAssSubSelector>& r) : l(l), r(r) {}
+
+    bool isPossiblyApplicable(AView* view) override {
+        if (r->isPossiblyApplicable(view)) {
+            if (auto parent = view->getParent()) {
+                return l->isPossiblyApplicable(parent);
+            }
+        }
+        return false;
+    }
+
+    bool isStateApplicable(AView* view) override {
+        if (r->isStateApplicable(view)) {
+            if (auto parent = view->getParent()) {
+                return l->isStateApplicable(parent);
+            }
+        }
+        return false;
+    }
+
+    void setupConnections(AView* view, const _<AAssHelper>& helper) override {
+        auto parent = view->getParent();
+        assert(parent);
+
+        r->setupConnections(view, helper);
+        l->setupConnections(parent, helper);
+    }
+};
+
 struct MyParentSubSelector: public IAssSubSelector {
 private:
     _<IAssSubSelector> l;
@@ -111,6 +146,7 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
 
 void SelectorVisitor::visitNode(const ArrayAccessOperatorNode& node) {
     INodeVisitor::visitNode(node);
+
 }
 
 void SelectorVisitor::visitNode(const RShiftOperatorNode& node) {
@@ -118,7 +154,24 @@ void SelectorVisitor::visitNode(const RShiftOperatorNode& node) {
     node.getLeft()->acceptVisitor(c1);
     node.getRight()->acceptVisitor(c1);
 
-    mSelector.addSubSelector(MyParentSubSelector(c1.mSelector.getSubSelectors().at(0), c1.mSelector.getSubSelectors().at(1)));
+    if (c1.mSelector.getSubSelectors().size() != 2) {
+        throw AException(":{} bad nested selector"_as.format(node.getLineNumber()));
+    }
+    mSelector.addSubSelector(MyParentSubSelector(c1.mSelector.getSubSelectors().at(0),
+                                                           c1.mSelector.getSubSelectors().at(1)));
+}
+
+void SelectorVisitor::visitNode(const GreaterOperatorNode& node) {
+    INodeVisitor::visitNode(node);
+    SelectorVisitor c1;
+    node.getLeft()->acceptVisitor(c1);
+    node.getRight()->acceptVisitor(c1);
+
+    if (c1.mSelector.getSubSelectors().size() != 2) {
+        throw AException(":{} bad nested selector"_as.format(node.getLineNumber()));
+    }
+    mSelector.addSubSelector(MyDirectParentSubSelector(c1.mSelector.getSubSelectors().at(0),
+                                                 c1.mSelector.getSubSelectors().at(1)));
 }
 
 void SelectorVisitor::visitNode(const OperatorCallNode& node) {

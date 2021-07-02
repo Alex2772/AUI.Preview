@@ -11,16 +11,20 @@
 #include <AUI/Traits/strings.h>
 #include <Visitor/Style/StyleVisitor.h>
 #include <View/MyBuildArea.h>
+#include <Model/ViewHierarchyTreeModel.h>
+#include <AUI/Util/AViewProfiler.h>
+#include <Visitor/Replicator.h>
+#include <AUI/Model/AListModel.h>
 
 using namespace ass;
 
 MainWindow::MainWindow():
-    AWindow("Preview")
+    AWindow("Preview", 1200_dp, 700_dp)
 {
     setContents(Horizontal {
         Vertical {
             Horizontal {
-                _new<ALabel>("Projects:"),
+                _new<ALabel>("Projects"),
                 _new<ASpacer>(),
                 _new<AButton>("Open...").connect(&AView::clicked, me::openFileDialog),
             },
@@ -28,7 +32,25 @@ MainWindow::MainWindow():
                                                                            [](const Project& p) {
                 return p.path.filename();
             })).connect(&AListView::selectionChanged, me::updatePreview),
-            _new<ASpacer>(),
+            _new<ALabel>("Твiя срака"),
+            (mViewHierarchyTree = _new<ATreeView>() let {
+                it->setViewFactory([](const _<ITreeModel<AString>>& model, const ATreeIndex& index) {
+                    auto name = model->itemAt(index);
+                    auto label = _new<ALabel>(name);
+                    _<IDrawable> drawable;
+                    try {
+                        drawable = AImageLoaderRegistry::inst().loadDrawable(":icon/{}.svg"_as.format(name));
+                    } catch (...) {}
+                    if (drawable == nullptr) {
+                        drawable = AImageLoaderRegistry::inst().loadDrawable(":icon/unknown.svg");
+                    }
+                    label->setIcon(drawable);
+                    return label;
+                });
+            }) with_style { Expanding {2, 2} },
+
+            mTargetViewDescription = _new<LayoutVisitor::ViewContainer>(),
+
         } << ".side_panel",
         Vertical {
             _new<MyBuildArea>( mDisplayWrapper = _new<StyleWrapperContainer>()),
@@ -41,6 +63,13 @@ MainWindow::MainWindow():
     });
 
     setCustomAss({ Padding { 0 } });
+
+    connect(mViewHierarchyTree->itemMouseHover, this, [&](const ATreeIndex& x) {
+        setTargetView((AView*)x.getUserData());
+    });
+    connect(mViewHierarchyTree->mouseLeave, this, [&]() {
+        mTargetView = nullptr;
+    });
 }
 
 void MainWindow::openFileDialog() {
@@ -50,12 +79,14 @@ void MainWindow::openFileDialog() {
 }
 
 void MainWindow::updatePreview() {
+    setTargetView(nullptr);
     if (mProjectsListView->getSelectionModel().empty()) {
         return;
     }
     _<Project> project = Autumn::put(_new<Project>(ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow())));
 
     mDisplayWrapper->setStylesheet(nullptr);
+    mViewHierarchyTree->setModel(nullptr);
     async {
         // find src/ folder
         auto root = project->getRoot();
@@ -89,6 +120,33 @@ void MainWindow::updatePreview() {
             view->setExpanding({ 2, 2 });
             updateLayout();
             flagRedraw();
+            mViewHierarchyTree->setModel(_new<ViewHierarchyTreeModel>(mDisplayWrapper));
         };
     };
+}
+
+void MainWindow::render() {
+    AViewContainer::render();
+
+    if (mTargetView) {
+        AViewProfiler::displayBoundsOn(*mTargetView);
+    }
+}
+
+void MainWindow::setTargetView(AView* targetView) {
+    mTargetView = targetView;
+    redraw();
+
+    if (targetView) {
+        mTargetViewDescription->setContents(Vertical {
+                _new<ALabel>(Replicator::prettyName(targetView)) with_style { FontSize {14_pt } },
+                _new<ALabel>("ASS classes:"),
+                _new<AListView>(_new<AListModel<AString>>(targetView->getAssNames().begin(), targetView->getAssNames().end())),
+        });
+    } else {
+        mTargetViewDescription->setContents(Stacked {
+            _new<ALabel>("No view selected") with_style { Opacity { 0.7f } }
+        });
+    }
+    updateLayout();
 }

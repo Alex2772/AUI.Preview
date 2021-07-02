@@ -16,6 +16,10 @@ namespace aui::preview {
         static ass::unset_wrap<AString> from_vm(const _<ExpressionNode>& n) {
             StringVisitor v;
             n->acceptVisitor(v);
+            const ass::unset_wrap<AString>& unset = v.getValue();
+            if (!unset) {
+                return {};
+            }
             auto str = *v.getValue();
 
             return ConversionHelper::remapUrl(str);
