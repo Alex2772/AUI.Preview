@@ -49,7 +49,7 @@ MainWindow::MainWindow():
                 });
             }) with_style { Expanding {2, 2} },
 
-            mTargetViewDescription = _new<LayoutVisitor::ViewContainer>(),
+            mTargetViewDescription = _new<LayoutVisitor::ViewContainer>() with_style { FixedSize { {}, 200_dp } },
 
         } << ".side_panel",
         Vertical {
@@ -70,6 +70,8 @@ MainWindow::MainWindow():
     connect(mViewHierarchyTree->mouseLeave, this, [&]() {
         mTargetView = nullptr;
     });
+
+    showNoViewSelected();
 }
 
 void MainWindow::openFileDialog() {
@@ -138,15 +140,22 @@ void MainWindow::setTargetView(AView* targetView) {
     redraw();
 
     if (targetView) {
+        char ptr[0xff];
+        sprintf(ptr, "0x%p", targetView);
         mTargetViewDescription->setContents(Vertical {
                 _new<ALabel>(Replicator::prettyName(targetView)) with_style { FontSize {14_pt } },
+                _new<ALabel>(ptr),
                 _new<ALabel>("ASS classes:"),
                 _new<AListView>(_new<AListModel<AString>>(targetView->getAssNames().begin(), targetView->getAssNames().end())),
         });
     } else {
-        mTargetViewDescription->setContents(Stacked {
-            _new<ALabel>("No view selected") with_style { Opacity { 0.7f } }
-        });
+        showNoViewSelected();
     }
     updateLayout();
+}
+
+void MainWindow::showNoViewSelected() const {
+    mTargetViewDescription->setContents(Stacked {
+        _new<ALabel>("No view selected") with_style { Opacity { 0.7f } }
+    });
 }

@@ -40,3 +40,4 @@ void RuleVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
         }
     }
 }
+

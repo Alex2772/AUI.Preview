@@ -18,6 +18,7 @@ public:
     const _<ass::decl::IDeclarationBase>& getRule() const {
         return mRule;
     }
+
 };
 
 

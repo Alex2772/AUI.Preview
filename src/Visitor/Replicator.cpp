@@ -15,14 +15,39 @@ _<ALayout> Replicator::layout(const AString& layoutName) {
 
 void Replicator::setCustomAss(AView* target, const Runtime::CallArgs& args) {
     for (auto& i : args) {
-        RuleVisitor v;
+
+        class MyVisitor: public INodeVisitor {
+        private:
+            RuleWithoutSelector r;
+
+        public:
+            void visitNode(const ImplicitInitializerListCtorNode& node) override {
+                INodeVisitor::visitNode(node);
+
+                for (auto& i : node.getElements()) {
+                    i->acceptVisitor(*this);
+                }
+            }
+
+            void visitNode(const ExplicitInitializerListCtorNode& node) override {
+                INodeVisitor::visitNode(node);
+                RuleVisitor v;
+                v.visitNode(node);
+
+                if (auto rule = v.getRule()) {
+                    r.addDeclaration(rule.get());
+                    StyleRuleBlockVisitor::ourDeclarationStorage << rule;
+                }
+            }
+
+            const RuleWithoutSelector& getRules() const {
+                return r;
+            }
+        } v;
         i->acceptVisitor(v);
-        RuleWithoutSelector r;
-        if (auto rule = v.getRule()) {
-            r.addDeclaration(rule.get());
-            StyleRuleBlockVisitor::ourDeclarationStorage << rule;
-            target->setCustomAss(r);
-        }
+
+        target->setCustomAss(v.getRules());
+
     }
 }
 

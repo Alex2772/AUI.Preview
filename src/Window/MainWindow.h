@@ -26,4 +26,6 @@ public:
     void render() override;
 
     void setTargetView(AView* targetView);
+
+    void showNoViewSelected() const;
 };
