@@ -21,12 +21,19 @@ namespace aui::preview {
                     mIsValid = true;
                 }
 
+                void visitNode(const ImplicitInitializerListCtorNode& node) override {
+                    INodeVisitor::visitNode(node);
+                    if (node.getElements().size() == 0) {
+                        mIsValid = true;
+                    }
+                }
+
                 [[nodiscard]]
                 std::nullptr_t getValue() const {
                     if (mIsValid) {
                         return nullptr;
                     }
-                    throw AException("not a boolean");
+                    throw AException("not a nullptr");
                 }
             } v;
             n->acceptVisitor(v);

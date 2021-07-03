@@ -7,6 +7,7 @@
 #include "Context.h"
 #include <Cpp/Runtime/Class.h>
 #include <Factory/FactoryRegistry.h>
+#include <Visitor/VariableReferenceVisitor.h>
 
 using namespace Runtime;
 
@@ -116,20 +117,7 @@ bool Context::doThisCall(const OperatorCallNode& call) {
 void Context::visitNode(const AssignmentOperatorNode& node) {
     AString variableName;
     {
-        class VariableReferenceVisitor : public INodeVisitor {
-        private:
-            std::optional<AString> mName;
-
-        public:
-            void visitNode(const VariableReferenceNode& node) override {
-                INodeVisitor::visitNode(node);
-                mName = node.getVariableName();
-            }
-
-            const std::optional<AString>& getName() const {
-                return mName;
-            }
-        } v;
+        VariableReferenceVisitor v;
         node.getLeft()->acceptVisitor(v);
         if (v.getName()) {
             variableName = *v.getName();

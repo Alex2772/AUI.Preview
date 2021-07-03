@@ -6,10 +6,13 @@
 
 
 #include <Cpp/AST/INodeVisitor.h>
+#include <Cpp/Runtime/Variable.h>
 #include <AUI/View/AView.h>
+#include <optional>
 
 class ViewVisitor: public INodeVisitor {
 protected:
+    std::optional<Runtime::Variable> mVariable;
     _<AView> mView;
 
 public:

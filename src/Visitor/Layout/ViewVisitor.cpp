@@ -17,6 +17,7 @@
 #include <Cpp/Runtime/Context.h>
 #include <Classes/Class.h>
 #include <Util/ICustomViewName.h>
+#include <Visitor/VariableReferenceVisitor.h>
 
 void ViewVisitor::visitNode(const LShiftOperatorNode& node) {
     try {
@@ -45,6 +46,13 @@ void ViewVisitor::visitNode(const ALetOperatorNode& node) {
 
 void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {
     node.getRight()->acceptVisitor(*this);
+    VariableReferenceVisitor v;
+    node.getLeft()->acceptVisitor(v);
+    if (v.getName()) {
+        if (mVariable) {
+            Autumn::get<Runtime::Context>()->setLocalVariable(*v.getName(), *mVariable);
+        }
+    }
 }
 
 class ReplicateError: public ALabel, public ICustomViewName {
@@ -57,6 +65,10 @@ public:
 
     }
 
+    bool consumesClick(const glm::ivec2& pos) override {
+        return false;
+    }
+
     AString getCustomViewName() override {
         return getText();
     }
@@ -67,7 +79,8 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
         assert(mView == nullptr);
 
         try {
-            mView = _cast<AView>(Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs())->getValue());
+            mVariable = Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs());
+            mView = _cast<AView>(mVariable->getValue());
         } catch (...) {
 
         }
@@ -78,6 +91,8 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
             ContainerListVisitor v;
             v.getContainer()->setLayout(Replicator::layout(node.getTemplateArg()));
             mView = v.getContainer();
+
+            mVariable = Runtime::Variable(get_class_descriptor<AViewContainer>(), mView);
 
             if (node.getArgs().size() == 1) {
                 node.getArgs().first()->acceptVisitor(v);
@@ -115,6 +130,7 @@ void ViewVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
         }
     }
     mView = view;
+    mVariable = Runtime::Variable(get_class_descriptor<AViewContainer>(), view);
 }
 
 void ViewVisitor::visitNode(const AWithStyleOperatorNode& node) {
@@ -131,6 +147,7 @@ void ViewVisitor::visitNode(const VariableReferenceNode& node) {
     if (var) {
         if (auto view = _cast<AView>(var->getValue())) {
             mView = view;
+            mVariable = var;
         } else {
             ALogger::warn(":{} variable '{}' is not an AView"_as.format(node.getLineNumber(), node.getVariableName()));
         }

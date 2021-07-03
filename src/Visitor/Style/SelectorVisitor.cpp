@@ -147,6 +147,15 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
 void SelectorVisitor::visitNode(const ArrayAccessOperatorNode& node) {
     INodeVisitor::visitNode(node);
 
+    SelectorVisitor c1;
+    node.getLeft()->acceptVisitor(c1);
+    if (c1.mSelector.getSubSelectors().size() == 1) {
+        StringVisitor cv;
+        node.getRight()->acceptVisitor(cv);
+        if (cv.getValue()) {
+            mSelector.addSubSelector(AttributeWrapper(c1.mSelector.getSubSelectors().first(), *cv.getValue()));
+        }
+    }
 }
 
 void SelectorVisitor::visitNode(const RShiftOperatorNode& node) {

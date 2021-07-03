@@ -26,7 +26,11 @@ public:
 
         AString getTypeName() override {
             // substring ass::
-            return AClass<T>::name().mid(5);
+            auto name = AClass<T>::name();
+            if (name.startsWith("ass::")) {
+                return name.mid(5);
+            }
+            return name;
         }
 
         _<ass::decl::IDeclarationBase> create(const AVector<_<ExpressionNode>>& args) override {

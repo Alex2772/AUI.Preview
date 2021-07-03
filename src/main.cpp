@@ -19,6 +19,7 @@
 #include <AUI/View/AVDividerView.h>
 #include <AUI/View/ASelectableLabel.h>
 #include <AUI/View/APageView.h>
+#include <AUI/View/ATabView.h>
 
 AUI_ENTRY {
     using namespace ass;
@@ -46,6 +47,9 @@ AUI_ENTRY {
         new object_factory<ASelectableLabel>::with_args<AString>,
 
         new object_factory<AImageView>::with_args<_<AImage>>,
+
+        new object_factory<ATabView>,
+        new object_factory<ATabButtonView>,
 
         new factory_lambda( [] {
             _<AListModel<AString>> exampleModel = _new<AListModel<AString>>({
