@@ -18,6 +18,8 @@ namespace Runtime {
         AMap<AString, Callable> mMemberFunctions;
 
     public:
+        ~IClass() override = default;
+
         bool isClass() override;
         IClass* asClass() override;
 

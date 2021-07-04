@@ -16,6 +16,9 @@ namespace Runtime {
     class Class: public virtual IClass {
     private:
 
+    public:
+        ~Class() override = default;
+
     protected:
 
         static T* runtimeThis() {

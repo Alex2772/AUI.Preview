@@ -8,6 +8,7 @@
 #include <Cpp/Runtime/Class.h>
 #include <Factory/FactoryRegistry.h>
 #include <Visitor/VariableReferenceVisitor.h>
+#include <AUI/Reflect/AReflect.h>
 
 using namespace Runtime;
 
@@ -102,13 +103,13 @@ bool Context::doThisCall(const OperatorCallNode& call) {
             return true;
         } catch (const AException& e) {
             ALogger::warn(":{} failed to call {}::{}: {}"_as.format(call.getLineNumber(),
-                                                                    typeid(*mCalleeThis->getType()->asClass()).name(),
+                                                                    AReflect::name(mCalleeThis->getType()->asClass()),
                                                                     call.getCallee(),
                                                                     e.getMessage()));
         }
     } catch (...) {
         ALogger::warn(":{} class '{}' doesn't have member function '{}'"_as.format(call.getLineNumber(),
-                                                                                   typeid(*mCalleeThis->getType()->asClass()).name(),
+                                                                                   AReflect::name(mCalleeThis->getType()->asClass()),
                                                                                    call.getCallee()));
     }
     return false;

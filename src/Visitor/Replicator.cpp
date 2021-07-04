@@ -8,6 +8,7 @@
 #include <Visitor/Style/RuleVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Util/ICustomViewName.h>
+#include <AUI/Reflect/AReflect.h>
 
 _<ALayout> Replicator::layout(const AString& layoutName) {
     return _cast<ALayout>(Autumn::get<FactoryRegistry<AObject>>()->create(layoutName, {})->getValue());
@@ -57,9 +58,9 @@ AString Replicator::prettyName(AView* view) {
         name = i->getCustomViewName();
     } else {
         if (auto c = dynamic_cast<AViewContainer*>(view)) {
-            name = typeid(*c->getLayout().get()).name();
+            name = AReflect::name(c->getLayout().get());
         } else {
-            name = typeid(*view).name();
+            name = AReflect::name(view);
         }
 
         // remove 'class '

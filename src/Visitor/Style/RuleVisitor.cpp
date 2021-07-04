@@ -8,6 +8,7 @@
 #include <Factory/FactoryRegistry.h>
 #include "RuleVisitor.h"
 #include <AUI/ASS/ASS.h>
+#include <AUI/Reflect/AReflect.h>
 
 void RuleVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
     const AVector<_unique<IFactory<ass::decl::IDeclarationBase>>>* factories = nullptr;
@@ -24,7 +25,7 @@ void RuleVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
                     break;
                 }
             } catch (const AException& e) {
-                errors.push_back({typeid(*f.get()).name(), e.getMessage()});
+                errors.push_back({AReflect::name(f.get()), e.getMessage()});
             }
         }
     } catch (...) {}

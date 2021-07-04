@@ -6,11 +6,12 @@
 
 #include "converter.h"
 #include <optional>
+#include <glm/glm.hpp>
 
 namespace aui::preview {
-    template<unsigned S, typename T>
-    struct converter<ass::unset_wrap<glm::vec<S, T>>> {
-        using vec_t = glm::vec<S, T>;
+    template<glm::length_t S, typename T, glm::qualifier Q>
+    struct converter<ass::unset_wrap<glm::vec<S, T, Q>>> {
+        using vec_t = glm::vec<S, T, Q>;
         static ass::unset_wrap<vec_t> from_vm(const _<ExpressionNode>& n) {
             class VecVisitor: public INodeVisitor {
             private:
@@ -43,6 +44,6 @@ namespace aui::preview {
     };
 
 
-    template<unsigned S, typename T>
-    struct converter<glm::vec<S, T>>: unset_wrap_converter<glm::vec<S, T>> {};
+    template<glm::length_t S, typename T, glm::qualifier Q>
+    struct converter<glm::vec<S, T, Q>>: unset_wrap_converter<glm::vec<S, T, Q>> {};
 }

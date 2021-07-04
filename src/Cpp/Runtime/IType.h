@@ -10,6 +10,7 @@ namespace Runtime {
 
     class IType {
     public:
+        virtual ~IType() = default;
         virtual bool isClass() { return false; }
         virtual IClass* asClass() = 0;
 

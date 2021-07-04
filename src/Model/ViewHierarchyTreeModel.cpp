@@ -10,6 +10,7 @@ size_t ViewHierarchyTreeModel::childrenCount(const ATreeIndex& parent) {
     if (auto c = dynamic_cast<AViewContainer*>(v)) {
         return c->getViews().size();
     }
+    return 0;
 }
 
 AString ViewHierarchyTreeModel::itemAt(const ATreeIndex& index) {
