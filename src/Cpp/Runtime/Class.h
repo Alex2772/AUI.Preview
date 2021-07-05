@@ -13,11 +13,8 @@
 namespace Runtime {
 
     template<typename T>
-    class Class: public virtual IClass {
+    class Class {
     private:
-
-    public:
-        ~Class() override = default;
 
     protected:
 
@@ -34,12 +31,12 @@ namespace Runtime {
         }
 
         template<typename... Args>
-        void registerMemberFunction(const AString& name, void(T::*member)(Args...)) {
-            registerFunction(name, [member](const CallArgs& args) {
+        Callable member(void(T::*member)(Args...)) {
+            return [member](const CallArgs& args) {
                 aui::preview::call_helper<std::decay_t<Args>...> h;
                 h.feed(args);
                 (std::apply)([&](Args&&... args) {(runtimeThis()->*member)(std::forward<Args>(args)...);}, h.storage);
-            });
+            };
         }
 
     };

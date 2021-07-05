@@ -6,7 +6,7 @@
 
 #include <AUI/View/ATabView.h>
 #include <Cpp/Runtime/Class.h>
-#include "Class.h"
+#include "GetClassDescriptor.h"
 
 template<>
 struct class_descriptor<ATabView>: public class_descriptor<AView>, public Runtime::Class<ATabView> {

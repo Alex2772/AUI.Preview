@@ -9,8 +9,9 @@
 #include "ViewContainerClass.h"
 
 template<>
-struct class_descriptor<APageView>: public class_descriptor<AViewContainer>, public Runtime::Class<APageView> {
+struct class_descriptor<APageView>: class_descriptor<AViewContainer>, Runtime::Class<APageView> {
     class_descriptor();
+    ~class_descriptor() override = default;
 };
 
 

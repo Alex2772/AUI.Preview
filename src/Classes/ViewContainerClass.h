@@ -9,9 +9,10 @@
 #include <AUI/View/AViewContainer.h>
 
 template<>
-struct class_descriptor<AViewContainer>: public class_descriptor<AView>, public Runtime::Class<AViewContainer> {
+struct class_descriptor<AViewContainer>: class_descriptor<AView>, Runtime::Class<AViewContainer> {
 public:
     class_descriptor();
+    ~class_descriptor() override = default;
 };
 
 

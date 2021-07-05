@@ -19,3 +19,4 @@ class_descriptor<APageView>::class_descriptor() {
 
     assert(getFunction("addPage"));
 }
+

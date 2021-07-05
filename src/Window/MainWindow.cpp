@@ -76,6 +76,7 @@ MainWindow::MainWindow():
 
 void MainWindow::openFileDialog() {
     ADesktop::browseForFile({}, {{"C++ source file", "cpp"}})->onDone([](const APath& p) {
+        if (p.empty()) return;
         ProjectsRepository::inst().getModel() << Project{ p };
     });
 }

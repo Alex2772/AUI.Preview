@@ -15,7 +15,7 @@
 #include <Visitor/Style/RuleVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Cpp/Runtime/Context.h>
-#include <Classes/Class.h>
+#include <Classes/GetClassDescriptor.h>
 #include <Util/ICustomViewName.h>
 #include <Visitor/VariableReferenceVisitor.h>
 

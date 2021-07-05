@@ -5,8 +5,9 @@
 #pragma once
 
 #include <Cpp/Runtime/Class.h>
+#include <Cpp/Runtime/IClass.h>
 
 template<class T>
-struct class_descriptor: public Runtime::Class<AObject> {
+struct class_descriptor: Runtime::Class<AObject>, Runtime::IClass {
 
 };

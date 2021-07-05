@@ -6,9 +6,10 @@
 #include <Visitor/Replicator.h>
 
 class_descriptor<AView>::class_descriptor() {
-    registerMemberFunction("setExpanding", &AView::setExpanding);
-    registerMemberFunction("addAssName", &AView::addAssName);
+    registerFunction("setExpanding", member(&AView::setExpanding));
+    registerFunction("addAssName", member(&AView::addAssName));
     registerFunction("setCustomAss", [](const Runtime::CallArgs& args) {
         Replicator::setCustomAss(runtimeThis(), args);
     });
 }
+

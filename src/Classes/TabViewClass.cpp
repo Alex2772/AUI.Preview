@@ -26,3 +26,4 @@ class_descriptor<ATabView>::class_descriptor() {
         }
     });
 }
+

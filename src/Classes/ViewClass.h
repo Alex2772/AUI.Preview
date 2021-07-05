@@ -9,9 +9,10 @@
 #include <AUI/View/AView.h>
 
 template<>
-struct class_descriptor<AView>: public Runtime::Class<AView> {
+struct class_descriptor<AView>: Runtime::Class<AView>, Runtime::IClass {
 public:
     class_descriptor();
+    ~class_descriptor() override = default;
 };
 
 

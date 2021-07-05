@@ -11,7 +11,7 @@
 #include <AUI/Reflect/AClass.h>
 #include <Converter/all.h>
 #include <Cpp/Runtime/IType.h>
-#include <Classes/Class.h>
+#include <Classes/GetClassDescriptor.h>
 
 
 template<typename T>

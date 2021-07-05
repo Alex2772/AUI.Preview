@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.14.4)
 
 project(AUI.Preview)
 
-set(AUI_USE_OLD_WAY false CACHE BOOL "The old linking way to AUI")
+set(AUI_DIR "" CACHE PATH "AUI DIR PATH")
 
 if(AUI_USE_OLD_WAY)
-    set(AUI_DIR "AUI_DIR" CACHE PATH "AUI DIR PATH")
     add_subdirectory(${AUI_DIR} build)
 else()
     message("Using new way to link AUI")
