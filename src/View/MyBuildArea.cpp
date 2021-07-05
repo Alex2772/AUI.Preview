@@ -28,7 +28,13 @@ void MyBuildArea::onMouseMove(glm::ivec2 pos) {
     ARulerArea::onMouseMove(pos);
     if (mMouseDragging) {
         auto delta = pos - mMouseDragPos;
-        mWrappedView->setFixedSize(glm::max(mPrevSize + delta * 2, glm::ivec2{mWrappedView->getContentMinimumWidth(), mWrappedView->getContentMinimumHeight()} ));
+        mWrappedView->setSize(
+                glm::max(
+                        mPrevSize + delta * 2,
+                        glm::ivec2{mWrappedView->getContentMinimumWidth(),
+                                      mWrappedView->getContentMinimumHeight()} ));
+
+        updatePosition();
     }
 }
 

@@ -137,6 +137,7 @@ void MainWindow::render() {
 }
 
 void MainWindow::setTargetView(AView* targetView) {
+    return;
     mTargetView = targetView;
     redraw();
 
