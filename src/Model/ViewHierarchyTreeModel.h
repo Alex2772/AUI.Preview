@@ -18,11 +18,12 @@ public:
 
     ~ViewHierarchyTreeModel() override = default;
 
-    void* getUserDataForRoot() override;
-
     size_t childrenCount(const ATreeIndex& parent) override;
     AString itemAt(const ATreeIndex& index) override;
     ATreeIndex indexOfChild(size_t row, size_t column, const ATreeIndex& parent) override;
+
+protected:
+    void *rootUserData() override;
 };
 
 

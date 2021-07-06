@@ -65,7 +65,7 @@ MainWindow::MainWindow():
     setCustomAss({ Padding { 0 } });
 
     connect(mViewHierarchyTree->itemMouseHover, this, [&](const ATreeIndex& x) {
-        setTargetView((AView*)x.getUserData());
+        setTargetView((AView*) x.getUserData());
     });
     connect(mViewHierarchyTree->mouseLeave, this, [&]() {
         mTargetView = nullptr;
@@ -137,9 +137,7 @@ void MainWindow::render() {
 }
 
 void MainWindow::setTargetView(AView* targetView) {
-    return;
     mTargetView = targetView;
-    redraw();
 
     if (targetView) {
         char ptr[0xff];
@@ -150,10 +148,11 @@ void MainWindow::setTargetView(AView* targetView) {
                 _new<ALabel>("ASS classes:"),
                 _new<AListView>(_new<AListModel<AString>>(targetView->getAssNames().begin(), targetView->getAssNames().end())),
         });
+        mTargetView->getParent()->updateLayout();
     } else {
         showNoViewSelected();
     }
-    updateLayout();
+    flagRedraw();
 }
 
 void MainWindow::showNoViewSelected() const {

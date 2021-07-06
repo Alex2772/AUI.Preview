@@ -7,22 +7,25 @@
 
 size_t ViewHierarchyTreeModel::childrenCount(const ATreeIndex& parent) {
     AView* v = reinterpret_cast<AView*>(parent.getUserData());
-    if (auto c = dynamic_cast<AViewContainer*>(v)) {
+    auto c = dynamic_cast<AViewContainer *>(v);
+    if (c) {
         return c->getViews().size();
+    } else {
+        return 0;
     }
-    return 0;
 }
 
 AString ViewHierarchyTreeModel::itemAt(const ATreeIndex& index) {
-    auto c = (AView*)index.getUserData();
+    auto c = (AView*) index.getUserData();
     return Replicator::prettyName(c);
 }
 
-ATreeIndex ViewHierarchyTreeModel::indexOfChild(size_t row, size_t column, const ATreeIndex& parent) {
-    AViewContainer* c = dynamic_cast<AViewContainer*>((AView*)parent.getUserData());
-    return {(AView*)c->getViews()[row].get(), row, column};
+void *ViewHierarchyTreeModel::rootUserData() {
+    return mRoot.get();
 }
 
-void* ViewHierarchyTreeModel::getUserDataForRoot() {
-    return (AView*)mRoot.get();
+ATreeIndex ViewHierarchyTreeModel::indexOfChild(size_t row, size_t column, const ATreeIndex& parent) {
+    AViewContainer* c = dynamic_cast<AViewContainer*>((AView*) parent.getUserData());
+    assert(c);
+    return ATreeIndex{ (void *) c->getViews()[row].get() };
 }
