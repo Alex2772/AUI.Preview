@@ -6,15 +6,17 @@
 #include <View/StyleWrapperContainer.h>
 #include <AUI/View/ATreeView.h>
 #include <Visitor/Layout/LayoutVisitor.h>
+#include <View/ProjectsTabView.h>
 
 class MainWindow: public AWindow {
 private:
-    _<AListView> mProjectsListView;
+    _<ProjectsTabView> mProjectsTabView;
     _<StyleWrapperContainer> mDisplayWrapper;
     _<ALabel> mPerformanceLabel;
     _<ATreeView> mViewHierarchyTree;
     AView* mTargetView = nullptr;
     _<LayoutVisitor::ViewContainer> mTargetViewDescription;
+    size_t mCurrentProjectId = -1;
 
     void openFileDialog();
 

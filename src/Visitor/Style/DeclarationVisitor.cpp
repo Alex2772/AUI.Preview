@@ -6,11 +6,12 @@
 #include <AUI/Logging/ALogger.h>
 #include <AUI/Autumn/Autumn.h>
 #include <Factory/FactoryRegistry.h>
-#include "RuleVisitor.h"
+#include "DeclarationVisitor.h"
 #include <AUI/ASS/ASS.h>
 #include <AUI/Reflect/AReflect.h>
 
-void RuleVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
+void DeclarationVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {
+    mNode = node;
     const AVector<_unique<IFactory<ass::decl::IDeclarationBase>>>* factories = nullptr;
     AVector<std::pair<AString, AString>> errors;
     try {

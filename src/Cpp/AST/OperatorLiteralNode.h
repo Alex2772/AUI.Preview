@@ -6,9 +6,10 @@
 
 
 #include <AUI/Common/AString.h>
+#include <AUI/Common/IStringable.h>
 #include "ExpressionNode.h"
 
-class OperatorLiteralNode: public ExpressionNode {
+class OperatorLiteralNode: public ExpressionNode, public IStringable {
 private:
     AString mLiteralName;
     _<ExpressionNode> mChild;
@@ -18,6 +19,8 @@ public:
                                                                                       mChild(child) {}
 
     void acceptVisitor(INodeVisitor& v) override;
+
+    AString toString() const override;
 
     const AString& getLiteralName() const {
         return mLiteralName;

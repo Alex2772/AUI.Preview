@@ -2,8 +2,9 @@
 
 #include "ExpressionNode.h"
 #include <cstdint>
+#include <AUI/Common/IStringable.h>
 
-class FloatNode: public ExpressionNode {
+class FloatNode: public ExpressionNode, public IStringable {
 private:
     double mNumber;
 
@@ -15,4 +16,6 @@ public:
     }
 
     void acceptVisitor(INodeVisitor& v) override;
+
+    AString toString() const override;
 };

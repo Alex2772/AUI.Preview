@@ -8,3 +8,11 @@
 void IntegerNode::acceptVisitor(INodeVisitor& v) {
     v.visitNode(*this);
 }
+
+AString IntegerNode::toString() const {
+    if (mIsHex) {
+        return "0x" + AString::numberHex(mNumber);
+    } else {
+        return AString::number(mNumber);
+    }
+}

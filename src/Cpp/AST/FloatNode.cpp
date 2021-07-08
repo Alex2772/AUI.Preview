@@ -8,3 +8,7 @@
 void FloatNode::acceptVisitor(INodeVisitor& v) {
     v.visitNode(*this);
 }
+
+AString FloatNode::toString() const {
+    return AString::number(mNumber);
+}

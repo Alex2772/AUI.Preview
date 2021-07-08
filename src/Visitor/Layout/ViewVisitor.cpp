@@ -12,7 +12,7 @@
 #include "ContainerListVisitor.h"
 #include "Visitor/Replicator.h"
 #include <AUI/Traits/strings.h>
-#include <Visitor/Style/RuleVisitor.h>
+#include <Visitor/Style/DeclarationVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Cpp/Runtime/Context.h>
 #include <Classes/GetClassDescriptor.h>
@@ -58,11 +58,15 @@ void ViewVisitor::visitNode(const AssignmentOperatorNode& node) {
 class ReplicateError: public ALabel, public ICustomViewName {
 public:
     ReplicateError(const AString& text) : ALabel(text) {
-
     }
 
     ~ReplicateError() override {
 
+    }
+
+    void render() override {
+        getFontStyle().align = TextAlign::CENTER;
+        ALabel::render();
     }
 
     bool consumesClick(const glm::ivec2& pos) override {
@@ -104,7 +108,6 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
     if (mView == nullptr) {
         ALogger::warn(":{} Replicate error for {}"_as.format(node.getLineNumber(), node.getTemplateArg()));
         mView = _new<ReplicateError>("<:{} {}>"_as.format(node.getLineNumber(), node.getTemplateArg()));
-        mView->setCustomAss(TextAlign::CENTER);
         mView << "preview_" + node.getTemplateArg();
     }
 }

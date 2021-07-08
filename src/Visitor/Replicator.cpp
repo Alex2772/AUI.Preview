@@ -5,7 +5,7 @@
 #include "Replicator.h"
 #include <Factory/FactoryRegistry.h>
 #include <AUI/Autumn/Autumn.h>
-#include <Visitor/Style/RuleVisitor.h>
+#include <Visitor/Style/DeclarationVisitor.h>
 #include <Visitor/Style/StyleRuleBlockVisitor.h>
 #include <Util/ICustomViewName.h>
 #include <AUI/Reflect/AReflect.h>
@@ -32,10 +32,10 @@ void Replicator::setCustomAss(AView* target, const Runtime::CallArgs& args) {
 
             void visitNode(const ExplicitInitializerListCtorNode& node) override {
                 INodeVisitor::visitNode(node);
-                RuleVisitor v;
+                DeclarationVisitor v;
                 v.visitNode(node);
 
-                if (auto rule = v.getRule()) {
+                if (auto rule = v.getDeclaration()) {
                     r.addDeclaration(rule.get());
                     StyleRuleBlockVisitor::ourDeclarationStorage << rule;
                 }

@@ -86,12 +86,12 @@ private:
     AVector<_<INode>> parseCodeBlock();
 
 
-    _<ExpressionNode> parseExpression(RequiredPriority requiredPriority = RequiredPriority::ANY);
 
 public:
     Parser(const AVector<AnyToken>& tokens) : mTokens(tokens) {}
 
     AVector<_<INode>> parse();
+    _<ExpressionNode> parseExpression(RequiredPriority requiredPriority = RequiredPriority::ANY);
 
     unsigned getCurrentLineNumber();
 };

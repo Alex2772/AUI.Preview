@@ -237,7 +237,7 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         } else if (isdigit(c)) {
                             // number
                             mTokenizer.reverseByte();
-                            int i = mTokenizer.readUInt();
+                            auto[i, isHex] = mTokenizer.readUIntX();
                             if (mTokenizer.readChar() == '.') {
                                 // float
                                 AString d10 = mTokenizer.readStringWhile(isdigit);
@@ -250,7 +250,7 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
 
                             } else {
                                 mTokenizer.reverseByte();
-                                result << IntegerToken{i};
+                                result << IntegerToken{i, isHex};
                             }
                         } else {
                             reportError(

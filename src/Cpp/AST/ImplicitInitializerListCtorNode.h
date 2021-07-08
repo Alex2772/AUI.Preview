@@ -7,9 +7,10 @@
 
 #include <AUI/Common/SharedPtrTypes.h>
 #include <AUI/Common/AVector.h>
+#include <AUI/Common/IStringable.h>
 #include "ExpressionNode.h"
 
-class ImplicitInitializerListCtorNode: public ExpressionNode {
+class ImplicitInitializerListCtorNode: public ExpressionNode, public IStringable {
 private:
     AVector<_<ExpressionNode>> mElements;
 
@@ -21,6 +22,8 @@ public:
     [[nodiscard]] const AVector<_<ExpressionNode>>& getElements() const {
         return mElements;
     }
+
+    AString toString() const override;
 };
 
 

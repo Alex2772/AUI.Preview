@@ -5,8 +5,10 @@
 #include <AUI/Logging/ALogger.h>
 #include "StyleRuleBlockVisitor.h"
 #include "SelectorVisitor.h"
-#include "RuleVisitor.h"
+#include "DeclarationVisitor.h"
+#include "MyDeclarationWrapper.h"
 
+// TODO remove this because it produces memory leak
 AVector<_<ass::decl::IDeclarationBase>> StyleRuleBlockVisitor::ourDeclarationStorage;
 
 void StyleRuleBlockVisitor::visitNode(const ImplicitInitializerListCtorNode& node) {
@@ -24,12 +26,14 @@ void StyleRuleBlockVisitor::visitNode(const ImplicitInitializerListCtorNode& nod
             return;
         }
 
-        // the other elements are rules
+        // the other elements are declarations
         for (auto i = node.getElements().begin() + 1; i != node.getElements().end(); ++i) {
-            RuleVisitor v;
+            DeclarationVisitor v;
             (*i)->acceptVisitor(v);
-            if (auto rule = v.getRule()) {
-                mRule->addDeclaration(rule.get());
+            if (auto rule = v.getDeclaration()) {
+                auto wrapper = _new<MyDeclarationWrapper>(rule.get(), std::forward<ExplicitInitializerListCtorNode>(v.getNode()));
+                mRule->addDeclaration(wrapper.get());
+                ourDeclarationStorage << wrapper;
                 ourDeclarationStorage << rule;
             }
         }

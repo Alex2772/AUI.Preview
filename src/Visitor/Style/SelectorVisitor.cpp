@@ -9,16 +9,21 @@
 #include <AUI/ASS/Selector/class_of.h>
 #include <Visitor/StringVisitor.h>
 #include <typeinfo>
+#include <AUI/Common/IStringable.h>
 
 using namespace ass;
 
-struct MyDirectParentSubSelector: public IAssSubSelector {
+struct MyDirectParentSubSelector: public IAssSubSelector, public IStringable {
 private:
     _<IAssSubSelector> l;
     _<IAssSubSelector> r;
 
 public:
     MyDirectParentSubSelector(const _<IAssSubSelector>& l, const _<IAssSubSelector>& r) : l(l), r(r) {}
+
+    AString toString() const override {
+        return "{} >> {}"_as.format(IStringable::toString(l), IStringable::toString(r));
+    }
 
     bool isPossiblyApplicable(AView* view) override {
         if (r->isPossiblyApplicable(view)) {
@@ -109,6 +114,28 @@ namespace selector {
         }
 
     };
+
+
+    struct ClassOf : virtual IAssSubSelector, IStringable {
+    private:
+        AStringVector mClasses;
+
+    public:
+        ClassOf(const AStringVector& classes) : mClasses(classes) {}
+        ClassOf(const AString& clazz) : mClasses({clazz}) {}
+
+        bool isPossiblyApplicable(AView* view) override {
+            for (auto& v : mClasses) {
+                if (view->getCssNames().contains(v))
+                    return true;
+            }
+            return false;
+        }
+
+        AString toString() const override {
+            return "ass::class_of(\"{}\")"_as.format(mClasses.join(", "));
+        }
+    };
 }
 
 void SelectorVisitor::visitNode(const ImplicitInitializerListCtorNode& node) {
@@ -138,7 +165,7 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
          * MainWindow -> addAssName("preview_MainWindow"))
          */
         auto assName = "preview_" + objectType;
-        mSelector.addSubSelector(ass::class_of(assName));
+        mSelector.addSubSelector(selector::ClassOf(assName));
     } else {
         ALogger::warn("Unknown selector {}<{}> at {}"_as.format(node.getCallee(), node.getTemplateArg(), node.getLineNumber()));
     }

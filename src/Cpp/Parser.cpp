@@ -440,10 +440,12 @@ _<ExpressionNode> Parser::parseExpression(RequiredPriority requiredPriority) {
                 ++mIterator;
                 break;
 
-            case got<IntegerToken>:
-                result = _new<IntegerNode>(std::get<IntegerToken>(*mIterator).value());
+            case got<IntegerToken>: {
+                auto& token = std::get<IntegerToken>(*mIterator);
+                result = _new<IntegerNode>(token.value(), token.isHex());
                 ++mIterator;
                 break;
+            }
 
             case got<FloatToken>:
                 result = _new<FloatNode>(std::get<FloatToken>(*mIterator).value());

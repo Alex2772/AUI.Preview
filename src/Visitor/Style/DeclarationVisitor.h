@@ -8,14 +8,19 @@
 #include <Cpp/AST/INodeVisitor.h>
 #include <AUI/ASS/ASS.h>
 
-class RuleVisitor: public INodeVisitor {
+class DeclarationVisitor: public INodeVisitor {
 private:
     _<ass::decl::IDeclarationBase> mRule;
+    std::optional<ExplicitInitializerListCtorNode> mNode;
 public:
     void visitNode(const ExplicitInitializerListCtorNode& node) override;
 
+    ExplicitInitializerListCtorNode&& getNode() {
+        return std::move(*mNode);
+    }
+
     [[nodiscard]]
-    const _<ass::decl::IDeclarationBase>& getRule() const {
+    const _<ass::decl::IDeclarationBase>& getDeclaration() const {
         return mRule;
     }
 

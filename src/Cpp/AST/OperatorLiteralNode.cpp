@@ -8,3 +8,7 @@
 void OperatorLiteralNode::acceptVisitor(INodeVisitor& v) {
     v.visitNode(*this);
 }
+
+AString OperatorLiteralNode::toString() const {
+    return IStringable::toString(mChild) + mLiteralName;
+}

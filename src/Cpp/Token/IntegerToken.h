@@ -14,9 +14,14 @@
 class IntegerToken: public IToken {
 private:
     int64_t mNumber;
+    bool mIsHex;
 
 public:
-    IntegerToken(int64_t number): mNumber(number) {}
+    IntegerToken(int64_t number, bool isHex) : mNumber(number), mIsHex(isHex) {}
+
+    bool isHex() const {
+        return mIsHex;
+    }
 
     const char* getName() override;
 

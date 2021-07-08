@@ -15,6 +15,8 @@
 #include <AUI/Util/AViewProfiler.h>
 #include <Visitor/Replicator.h>
 #include <AUI/Model/AListModel.h>
+#include <View/ProjectsTabView.h>
+#include <View/StylesView.h>
 
 using namespace ass;
 
@@ -23,16 +25,6 @@ MainWindow::MainWindow():
 {
     setContents(Horizontal {
         Vertical {
-            Horizontal {
-                _new<ALabel>("Projects"),
-                _new<ASpacer>(),
-                _new<AButton>("Open...").connect(&AView::clicked, me::openFileDialog),
-            },
-            mProjectsListView = _new<AListView>(AAdapter::make<Project>(ProjectsRepository::inst(),
-                                                                           [](const Project& p) {
-                return p.path.filename();
-            })).connect(&AListView::selectionChanged, me::updatePreview),
-            _new<ALabel>("Твiя срака"),
             (mViewHierarchyTree = _new<ATreeView>() let {
                 it->setViewFactory([](const _<ITreeModel<AString>>& model, const ATreeIndex& index) {
                     auto name = model->itemAt(index);
@@ -53,6 +45,22 @@ MainWindow::MainWindow():
 
         } << ".side_panel",
         Vertical {
+            Horizontal {
+                mProjectsTabView = _new<ProjectsTabView>() let {
+                    it->setModel(AAdapter::make<Project>(ProjectsRepository::inst(),
+                                                         [](const Project& p) {
+                                                             return p.path.filename();
+                                                         }));
+                },
+                _new<AButton>("+").connect(&AView::clicked, me::openFileDialog) with_style {
+                    BackgroundSolid { nullptr },
+                    BoxShadow { nullptr },
+                    Padding { 4_dp },
+                    MinSize { 0 },
+                },
+                _new<ASpacer>(),
+            },
+
             _new<MyBuildArea>( mDisplayWrapper = _new<StyleWrapperContainer>()),
 
             // bottom panel
@@ -70,6 +78,10 @@ MainWindow::MainWindow():
     connect(mViewHierarchyTree->mouseLeave, this, [&]() {
         mTargetView = nullptr;
     });
+    connect(mProjectsTabView->selectionChanged, [&](size_t index) {
+        mCurrentProjectId = index;
+        updatePreview();
+    });
 
     showNoViewSelected();
 }
@@ -82,11 +94,13 @@ void MainWindow::openFileDialog() {
 }
 
 void MainWindow::updatePreview() {
-    setTargetView(nullptr);
-    if (mProjectsListView->getSelectionModel().empty()) {
+    if (mCurrentProjectId >= ProjectsRepository::inst().getModel()->size()) {
         return;
     }
-    _<Project> project = Autumn::put(_new<Project>(ProjectsRepository::inst().getModel()->at(mProjectsListView->getSelectionModel().one().getRow())));
+
+    setTargetView(nullptr);
+
+    _<Project> project = Autumn::put(_new<Project>(ProjectsRepository::inst().getModel()->at(mCurrentProjectId)));
 
     mDisplayWrapper->setStylesheet(nullptr);
     mViewHierarchyTree->setModel(nullptr);
@@ -140,13 +154,13 @@ void MainWindow::setTargetView(AView* targetView) {
     mTargetView = targetView;
 
     if (targetView) {
-        char ptr[0xff];
-        sprintf(ptr, "0x%p", targetView);
         mTargetViewDescription->setContents(Vertical {
-                _new<ALabel>(Replicator::prettyName(targetView)) with_style { FontSize {14_pt } },
-                _new<ALabel>(ptr),
-                _new<ALabel>("ASS classes:"),
-                _new<AListView>(_new<AListModel<AString>>(targetView->getAssNames().begin(), targetView->getAssNames().end())),
+            _new<StylesView>(targetView) let {
+                connect(it->assUpdated, [&]{
+                    mDisplayWrapper->invalidateAllViewStyles();
+                    mDisplayWrapper->updateLayout();
+                });
+            },
         });
         mTargetView->getParent()->updateLayout();
     } else {
