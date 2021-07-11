@@ -8,7 +8,7 @@
 #include <AUI/View/AViewContainer.h>
 #include "INode.h"
 
-class AST {
+class API_AUI_PREVIEW_LIBRARY AST {
 private:
     AVector<_<INode>> mNodes;
 

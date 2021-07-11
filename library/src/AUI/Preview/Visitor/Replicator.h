@@ -8,10 +8,10 @@
 #include <AUI/Preview/Cpp/Runtime/Callable.h>
 
 namespace Replicator {
-    _<ALayout> layout(const AString& layoutName);
-    void setCustomAss(AView* target, const Runtime::CallArgs& args);
+    API_AUI_PREVIEW_LIBRARY _<ALayout> layout(const AString& layoutName);
+    API_AUI_PREVIEW_LIBRARY void setCustomAss(AView* target, const Runtime::CallArgs& args);
 
-    AString prettyName(AView* view);
+    API_AUI_PREVIEW_LIBRARY AString prettyName(AView* view);
 }
 
 

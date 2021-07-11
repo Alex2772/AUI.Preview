@@ -8,7 +8,7 @@
 #include <AUI/Preview/Cpp/AST/INodeVisitor.h>
 #include <AUI/ASS/AStylesheet.h>
 
-class StyleVisitor: public INodeVisitor {
+class API_AUI_PREVIEW_LIBRARY StyleVisitor: public INodeVisitor {
 private:
     _<AStylesheet> mStylesheet;
 

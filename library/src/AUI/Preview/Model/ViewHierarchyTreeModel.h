@@ -9,7 +9,7 @@
 #include <AUI/Model/ITreeModel.h>
 #include <AUI/View/AViewContainer.h>
 
-class ViewHierarchyTreeModel: public ITreeModel<AString> {
+class API_AUI_PREVIEW_LIBRARY ViewHierarchyTreeModel: public ITreeModel<AString> {
 private:
     _<AViewContainer> mRoot;
 

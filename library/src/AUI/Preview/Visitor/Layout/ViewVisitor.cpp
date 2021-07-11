@@ -84,7 +84,9 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
 
         try {
             mVariable = Autumn::get<FactoryRegistry<AObject>>()->create(node.getTemplateArg(), node.getArgs());
-            mView = _cast<AView>(mVariable->getValue());
+            if (mVariable) {
+                mView = _cast<AView>(mVariable->getValue());
+            }
         } catch (...) {
 
         }

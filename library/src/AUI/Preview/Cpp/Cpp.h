@@ -10,8 +10,8 @@
 #include <AUI/Preview/Cpp/AST/ExpressionNode.h>
 
 namespace Cpp {
-    _<AST> parseCode(const APath& p);
-    _<ExpressionNode> parseExpression(const AString& text);
+    API_AUI_PREVIEW_LIBRARY _<AST> parseCode(const APath& p);
+    API_AUI_PREVIEW_LIBRARY _<ExpressionNode> parseExpression(const AString& text);
 };
 
 

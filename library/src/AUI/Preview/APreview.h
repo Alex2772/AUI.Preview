@@ -23,5 +23,6 @@
 namespace APreview {
     API_AUI_PREVIEW_LIBRARY void registerFactory(const AVector<IFactory<AObject>*>& factories);
     API_AUI_PREVIEW_LIBRARY _<FactoryRegistry<AObject>> getFactoryRegistry();
+    API_AUI_PREVIEW_LIBRARY void setProject(const _<Project>& project);
 };
 

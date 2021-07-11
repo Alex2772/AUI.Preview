@@ -12,7 +12,7 @@
 
 class ViewContainerClass;
 
-class LayoutVisitor: public INodeVisitor {
+class API_AUI_PREVIEW_LIBRARY LayoutVisitor: public INodeVisitor {
 public:
     class ViewContainer: public AViewContainer {
         friend class LayoutVisitor;

@@ -11,3 +11,7 @@ void APreview::registerFactory(const AVector<IFactory<AObject>*>& factories) {
 _<FactoryRegistry<AObject>> APreview::getFactoryRegistry() {
     return Autumn::get<FactoryRegistry<AObject>>();
 }
+
+void APreview::setProject(const _<Project>& project) {
+    Autumn::put(project);
+}

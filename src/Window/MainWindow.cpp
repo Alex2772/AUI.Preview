@@ -19,6 +19,7 @@
 #include <View/StylesView.h>
 #include <AUI/Platform/Dll.h>
 #include <AUI/Common/Plugin.h>
+#include <AUI/Preview/APreview.h>
 
 using namespace ass;
 
@@ -109,6 +110,7 @@ void MainWindow::updatePreview() {
     async {
         // find src/ folder
         auto root = project->getRoot();
+        APreview::setProject(project);
 
         // check if we can load plugins
         AString extension = "." + Dll::getDllExtension();

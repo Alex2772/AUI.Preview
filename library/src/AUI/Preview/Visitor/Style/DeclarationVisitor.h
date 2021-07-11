@@ -7,8 +7,9 @@
 
 #include <AUI/Preview/Cpp/AST/INodeVisitor.h>
 #include <AUI/ASS/ASS.h>
+#include <optional>
 
-class DeclarationVisitor: public INodeVisitor {
+class API_AUI_PREVIEW_LIBRARY DeclarationVisitor: public INodeVisitor {
 private:
     _<ass::decl::IDeclarationBase> mRule;
     std::optional<ExplicitInitializerListCtorNode> mNode;

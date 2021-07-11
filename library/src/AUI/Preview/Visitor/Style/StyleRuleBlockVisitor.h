@@ -17,7 +17,7 @@
  *     ...
  * }
  */
-class StyleRuleBlockVisitor: public INodeVisitor {
+class API_AUI_PREVIEW_LIBRARY StyleRuleBlockVisitor: public INodeVisitor {
 private:
     _unique<Rule> mRule;
 
