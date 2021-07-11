@@ -35,16 +35,16 @@
 #include <AUI/Traits/strings.h>
 
 #include <AUI/ASS/ASS.h>
-#include <Visitor/Style/MyDeclarationWrapper.h>
+#include <AUI/Preview/Visitor/Style/MyDeclarationWrapper.h>
 #include <AUI/Util/UIBuildingHelpers.h>
 #include <AUI/Util/AViewProfiler.h>
-#include <Visitor/Replicator.h>
+#include <AUI/Preview/Visitor/Replicator.h>
 #include <AUI/View/ATextField.h>
-#include <Visitor/SimpleNodeVisitor.h>
-#include <Cpp/AST/AST.h>
-#include <Cpp/Cpp.h>
-#include <Visitor/Style/DeclarationVisitor.h>
-#include <Visitor/Style/StyleRuleBlockVisitor.h>
+#include <AUI/Preview/Visitor/SimpleNodeVisitor.h>
+#include <AUI/Preview/Cpp/AST/AST.h>
+#include <AUI/Preview/Cpp/Cpp.h>
+#include <AUI/Preview/Visitor/Style/DeclarationVisitor.h>
+#include <AUI/Preview/Visitor/Style/StyleRuleBlockVisitor.h>
 
 using namespace ass;
 

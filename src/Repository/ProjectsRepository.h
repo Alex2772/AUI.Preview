@@ -6,7 +6,7 @@
 
 
 #include <AUI/Model/AListModel.h>
-#include <Model/Project.h>
+#include <AUI/Preview/Model/Project.h>
 
 class ProjectsRepository {
 private:

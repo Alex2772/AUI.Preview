@@ -6,17 +6,19 @@
 #include <Repository/ProjectsRepository.h>
 #include <AUI/View/AButton.h>
 #include <AUI/Platform/ADesktop.h>
-#include <Cpp/Cpp.h>
-#include <Visitor/Layout/LayoutVisitor.h>
+#include <AUI/Preview/Cpp/Cpp.h>
+#include <AUI/Preview/Visitor/Layout/LayoutVisitor.h>
 #include <AUI/Traits/strings.h>
-#include <Visitor/Style/StyleVisitor.h>
+#include <AUI/Preview/Visitor/Style/StyleVisitor.h>
 #include <View/MyBuildArea.h>
-#include <Model/ViewHierarchyTreeModel.h>
+#include <AUI/Preview/Model/ViewHierarchyTreeModel.h>
 #include <AUI/Util/AViewProfiler.h>
-#include <Visitor/Replicator.h>
+#include <AUI/Preview/Visitor/Replicator.h>
 #include <AUI/Model/AListModel.h>
 #include <View/ProjectsTabView.h>
 #include <View/StylesView.h>
+#include <AUI/Platform/Dll.h>
+#include <AUI/Common/Plugin.h>
 
 using namespace ass;
 
@@ -107,6 +109,24 @@ void MainWindow::updatePreview() {
     async {
         // find src/ folder
         auto root = project->getRoot();
+
+        // check if we can load plugins
+        AString extension = "." + Dll::getDllExtension();
+        static ASet<AString> loadedPlugins;
+        for (auto& path : root.listDir(ListFlags::RECURSIVE | ListFlags::REGULAR_FILES)) {
+            auto filename = path.filename();
+            if (!loadedPlugins.contains(filename)) {
+                if (filename.endsWith(extension) &&
+                    (filename.startsWith("libpreview.") || filename.startsWith("preview."))) {
+                    ALogger::info("Loading plugin {}"_as.format(path));
+                    AStylesheet::inst().setIgnoreRules(true);
+                    aui::importPluginPath(path);
+                    loadedPlugins << filename;
+                    AStylesheet::inst().setIgnoreRules(false);
+                }
+            }
+        }
+
         auto styleSheetCpp = root["src"]["Style.cpp"];
         if (styleSheetCpp.isRegularFileExists()) {
             // stylesheets

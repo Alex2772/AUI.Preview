@@ -4,7 +4,7 @@
 
 #include <AUI/IO/FileInputStream.h>
 #include <AUI/Json/AJson.h>
-#include <Model/Project.h>
+#include <AUI/Preview/Model/Project.h>
 #include <Repository/ProjectsRepository.h>
 #include <AUI/Logging/ALogger.h>
 #include "Settings.h"

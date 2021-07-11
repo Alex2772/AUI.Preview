@@ -5,7 +5,7 @@
 #include <AUI/View/ALabel.h>
 #include <View/StyleWrapperContainer.h>
 #include <AUI/View/ATreeView.h>
-#include <Visitor/Layout/LayoutVisitor.h>
+#include <AUI/Preview/Visitor/Layout/LayoutVisitor.h>
 #include <View/ProjectsTabView.h>
 
 class MainWindow: public AWindow {
