@@ -18,7 +18,11 @@ public:
         friend class LayoutVisitor;
         friend class ViewContainerClass;
         friend class MainWindow;
+    public:
 
+        void setContents2(const _<AViewContainer>& container) {
+            setContents(container);
+        }
     };
 
 private:

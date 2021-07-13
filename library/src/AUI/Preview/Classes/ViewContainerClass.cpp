@@ -14,7 +14,7 @@ class_descriptor<AViewContainer>::class_descriptor() {
             ViewVisitor uiBuilder;
             x->acceptVisitor(uiBuilder);
             if (auto container = _cast<AViewContainer>(uiBuilder.getView())) {
-                //((LayoutVisitor::ViewContainer*)Class<AViewContainer>::runtimeThis())->setContents(container);
+                ((LayoutVisitor::ViewContainer*)Class<AViewContainer>::runtimeThis())->setContents2(container);
             }
         }
     });

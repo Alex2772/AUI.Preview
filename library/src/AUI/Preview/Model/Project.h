@@ -19,7 +19,7 @@ struct Project {
                 return p.parent();
             }
         }
-        return {};
+        return path.parent();
     }
 };
 
