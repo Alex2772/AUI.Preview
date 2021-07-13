@@ -86,13 +86,30 @@ MainWindow::MainWindow():
         updatePreview();
     });
 
+    mTimer = _new<ATimer>(200);
+    connect(mTimer->fired, me::checkForFileUpdate);
+    mTimer->start();
+
     showNoViewSelected();
 }
 
+void MainWindow::checkForFileUpdate() {
+    if (mCurrentProjectId >= ProjectsRepository::inst().getModel()->size()) {
+        return;
+    }
+    Project& project = ProjectsRepository::inst().getModel()->at(mCurrentProjectId);
+    if (mModifyTime != project.path.fileModifyTime()) {
+        updatePreview();
+    }
+}
+
 void MainWindow::openFileDialog() {
-    ADesktop::browseForFile({}, {{"C++ source file", "cpp"}})->onDone([](const APath& p) {
+    ADesktop::browseForFile({}, {{"C++ source file", "cpp"}})->onDone([&](const APath& p) {
         if (p.empty()) return;
         ProjectsRepository::inst().getModel() << Project{ p };
+        mCurrentProjectId = ProjectsRepository::inst().getModel()->size() - 1;
+        mModifyTime = p.fileModifyTime();
+        updatePreview();
     });
 }
 
@@ -104,7 +121,7 @@ void MainWindow::updatePreview() {
     setTargetView(nullptr);
 
     _<Project> project = Autumn::put(_new<Project>(ProjectsRepository::inst().getModel()->at(mCurrentProjectId)));
-
+    mModifyTime = project->path.fileModifyTime();
     mDisplayWrapper->setStylesheet(nullptr);
     mViewHierarchyTree->setModel(nullptr);
     async {

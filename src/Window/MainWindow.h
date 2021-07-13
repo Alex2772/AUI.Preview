@@ -10,7 +10,9 @@
 
 class MainWindow: public AWindow {
 private:
+    _<ATimer> mTimer;
     _<ProjectsTabView> mProjectsTabView;
+    time_t mModifyTime;
     _<StyleWrapperContainer> mDisplayWrapper;
     _<ALabel> mPerformanceLabel;
     _<ATreeView> mViewHierarchyTree;
@@ -19,8 +21,8 @@ private:
     size_t mCurrentProjectId = -1;
 
     void openFileDialog();
-
     void updatePreview();
+    void checkForFileUpdate();
 
 public:
     MainWindow();
