@@ -894,6 +894,11 @@ _<INode> Parser::parseStructClassDefinition() {
             break;
         }
 
+        case got<ColonToken>: { // parents
+            // skip it
+            for (; mIterator->index() != got<LCurlyBracketToken>; ++mIterator) {}
+        }
+
         case got<LCurlyBracketToken>: {
             // declaration
             ++mIterator;
@@ -928,6 +933,8 @@ _<INode> Parser::parseStructClassDefinition() {
                             }
                             break;
                         }
+                        default:
+                            ++mIterator;
                     }
                 }
             }();

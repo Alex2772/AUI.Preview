@@ -33,6 +33,7 @@ public:
 
     void visitNode(const ConstructorDeclarationNode& node) override;
     void visitNode(const OperatorCallNode& node) override;
+    void visitNode(const StructClassDefinition& node) override;
 
 
     [[nodiscard]]

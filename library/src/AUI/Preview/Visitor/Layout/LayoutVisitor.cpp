@@ -22,8 +22,14 @@ void LayoutVisitor::visitNode(const ConstructorDeclarationNode& node) {
     Autumn::get<Runtime::Context>()->executeCodeBlock(node.getCode());
 }
 
+
 void LayoutVisitor::visitNode(const OperatorCallNode& node) {
 
+}
+void LayoutVisitor::visitNode(const StructClassDefinition& node) {
+    for (auto& i : node.getNodes()) {
+        i->acceptVisitor(*this);
+    }
 }
 
 LayoutVisitor::LayoutVisitor() {
