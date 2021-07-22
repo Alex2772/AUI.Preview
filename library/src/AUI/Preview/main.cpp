@@ -4,6 +4,9 @@
 
 
 #include <AUI/View/AListView.h>
+#include <AUI/View/ATextField.h>
+#include <AUI/View/ATextArea.h>
+#include <AUI/Preview/View/MySpacer.h>
 #include "AUI/api.h"
 
 #include "APreview.h"
@@ -17,6 +20,9 @@ struct Entry {
         Autumn::get<FactoryRegistry<AObject>>()->registerFactory({
             // VIEWS =======================================================================================================
             new object_factory<AView>,
+            new factory_lambda( [] {
+                return _cast<ASpacer>(_new<MySpacer>());
+            }),
             new object_factory<ASpacer>,
             new object_factory<AButton>,
             new object_factory<AButton>::with_args<AString>,
@@ -24,6 +30,9 @@ struct Entry {
             new object_factory<AVDividerView>,
             new object_factory<APageView>,
             new object_factory<ALabel>,
+            new object_factory<ATextField>,
+            new object_factory<ATextArea>,
+            new object_factory<AAbstractTextField>,
             new object_factory<ALabel>::with_args<AString>,
             new object_factory<ASelectableLabel>,
             new object_factory<ASelectableLabel>::with_args<AString>,
