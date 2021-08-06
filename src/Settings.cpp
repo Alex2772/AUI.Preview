@@ -9,6 +9,7 @@
 #include <AUI/Logging/ALogger.h>
 #include "Settings.h"
 
+
 Settings& Settings::inst() {
     static Settings s;
     return s;
