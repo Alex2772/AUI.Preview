@@ -154,7 +154,7 @@ void MainWindow::updatePreview() {
                 auto ast = Cpp::parseCode(styleSheetCpp);
                 ast->visit(v);
                 auto s = v.getStylesheet();
-                ui {
+                ui_thread {
                     mDisplayWrapper->setStylesheet(s);
                 };
             };
@@ -164,7 +164,7 @@ void MainWindow::updatePreview() {
         auto before1 = high_resolution_clock::now().time_since_epoch();
         auto ast = Cpp::parseCode(project->path);
         auto after1 = high_resolution_clock::now().time_since_epoch();
-        ui {
+        ui_thread {
             auto before2 = high_resolution_clock::now().time_since_epoch();
             LayoutVisitor v;
             ast->visit(v);
