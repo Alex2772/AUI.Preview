@@ -41,7 +41,8 @@ namespace aui::preview {
                             StringVisitor s;
                             node.getArgs().first()->acceptVisitor(s);
                             if (s.getValue()) {
-                                mValue = AImageLoaderRegistry::inst().loadImage(ConversionHelper::remapUrl(*s.getValue()));
+                                // FIXME AImageLoaderRegistry
+                                //mValue = AImageLoaderRegistry::inst().loadImage(ConversionHelper::remapUrl(*s.getValue()));
                             }
                         }
                     }

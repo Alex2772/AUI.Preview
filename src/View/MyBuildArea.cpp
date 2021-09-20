@@ -11,7 +11,7 @@ using namespace ass;
 MyBuildArea::MyBuildArea(const _<AView>& wrappedView):
         ARulerArea(wrappedView),
         mWrappedView(wrappedView),
-        mCornerDrawable(AImageLoaderRegistry::inst().loadDrawable(":svg/resize.svg"))
+        mCornerDrawable(IDrawable::fromUrl(":svg/resize.svg"))
 {
 }
 

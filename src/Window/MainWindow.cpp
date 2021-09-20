@@ -34,10 +34,10 @@ MainWindow::MainWindow():
                     auto label = _new<ALabel>(name);
                     _<IDrawable> drawable;
                     try {
-                        drawable = AImageLoaderRegistry::inst().loadDrawable(":icon/{}.svg"_as.format(name));
+                        drawable = IDrawable::fromUrl(":icon/{}.svg"_as.format(name));
                     } catch (...) {}
                     if (drawable == nullptr) {
-                        drawable = AImageLoaderRegistry::inst().loadDrawable(":icon/unknown.svg");
+                        drawable = IDrawable::fromUrl(":icon/unknown.svg");
                     }
                     label->setIcon(drawable);
                     return label;
