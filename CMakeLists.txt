@@ -15,12 +15,12 @@ if (NOT TARGET AUI.Core)
     endif()
 endif()
 
-AUI_Deploy_Library(AUI.Svg)
-AUI_Deploy_Library(AUI.Image)
+aui_deploy_library(AUI.Svg)
+aui_deploy_library(AUI.Image)
 
-AUI_Executable_Advanced(AUI.Preview "${ADDITIONAL_SRCS}")
+aui_executable_advanced(AUI.Preview "${ADDITIONAL_SRCS}")
 
-AUI_Compile_Assets(AUI.Preview)
+aui_compile_assets(AUI.Preview)
 
 target_link_libraries(AUI.Preview PRIVATE AUI.Core)
 target_link_libraries(AUI.Preview PRIVATE AUI.Views)
