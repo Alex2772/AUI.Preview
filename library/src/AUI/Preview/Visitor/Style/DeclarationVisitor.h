@@ -12,12 +12,16 @@
 class API_AUI_PREVIEW_LIBRARY DeclarationVisitor: public INodeVisitor {
 private:
     _<ass::decl::IDeclarationBase> mRule;
-    std::optional<ExplicitInitializerListCtorNode> mNode;
+    _<INode> mNode;
+
 public:
     void visitNode(const ExplicitInitializerListCtorNode& node) override;
 
-    ExplicitInitializerListCtorNode&& getNode() {
-        return std::move(*mNode);
+    // handles BackgroundCropping::H4_1()
+    void visitNode(const StaticMemberAccessOperatorNode& node) override;
+
+    const _<INode>& getNode() {
+        return mNode;
     }
 
     [[nodiscard]]

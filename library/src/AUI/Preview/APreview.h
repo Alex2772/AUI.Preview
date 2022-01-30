@@ -10,7 +10,6 @@
 #include <AUI/Model/AListModel.h>
 #include <AUI/Util/UIBuildingHelpers.h>
 #include <AUI/ASS/ASS.h>
-#include <AUI/View/AImageView.h>
 #include <AUI/View/AHDividerView.h>
 #include <AUI/View/AVDividerView.h>
 #include <AUI/View/ASelectableLabel.h>

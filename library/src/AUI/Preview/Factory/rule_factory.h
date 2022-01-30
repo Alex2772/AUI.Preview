@@ -42,4 +42,65 @@ public:
             }, h.storage);
         }
     };
+
+    template<typename FactoryFunction>
+    class with_factory_function : public IFactory<ass::decl::IDeclarationBase> {
+    private:
+        AString mName;
+        FactoryFunction mFactoryFunction;
+
+    public:
+        with_factory_function(AString name, FactoryFunction factoryFunction) :
+            mName(std::move(name)),
+            mFactoryFunction(std::move(factoryFunction)) {
+
+        }
+
+        bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
+            return args.empty();
+        }
+
+        AString getTypeName() override {
+            // substring ass::
+            auto name = AClass<T>::name() + "::" + mName;
+            if (name.startsWith("ass::")) {
+                return name.mid(5);
+            }
+            return name;
+        }
+
+        _<ass::decl::IDeclarationBase> create(const AVector<_<ExpressionNode>>& args) override {
+            return _new<ass::decl::Declaration<T>>(mFactoryFunction());
+        }
+    };
+    template<typename ConstantValue>
+    class with_constant : public IFactory<ass::decl::IDeclarationBase> {
+    private:
+        AString mName;
+        ConstantValue mConstantValue;
+
+    public:
+        with_constant(AString name, ConstantValue constantValue) :
+            mName(std::move(name)),
+            mConstantValue(std::move(constantValue)) {
+
+        }
+
+        bool isApplicable(const AVector<_<ExpressionNode>>& args) override {
+            return args.empty();
+        }
+
+        AString getTypeName() override {
+            // substring ass::
+            auto name = AClass<T>::name() + "::" + mName;
+            if (name.startsWith("ass::")) {
+                return name.mid(5);
+            }
+            return name;
+        }
+
+        _<ass::decl::IDeclarationBase> create(const AVector<_<ExpressionNode>>& args) override {
+            return _new<ass::decl::Declaration<T>>(mConstantValue);
+        }
+    };
 };

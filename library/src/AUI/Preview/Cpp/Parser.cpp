@@ -669,7 +669,7 @@ _<VariableDeclarationNode> Parser::parseVariableDeclaration() {
                         ++mIterator;
                         switch (mIterator->index()) {
                             case got<IdentifierToken>:
-                                typeName += "<" + std::get<IdentifierToken>(*mIterator).value() + ">";
+                                typeName += "<" + parseTypename() + ">";
                                 ++mIterator;
                                 expect<RAngleBracketToken>();
                                 break;
@@ -771,13 +771,15 @@ void Parser::reportUnexpectedEof() {
 }
 
 void Parser::reportError(const AString& message) {
-    unsigned lineNumber;
-    std::visit([&](auto&& x) {
-        lineNumber = x.getLineNumber();
-    }, *mIterator);
+    unsigned lineNumber = -1;
+    if (mIterator < mTokens.end()) {
+        std::visit([&](auto&& x) {
+            lineNumber = x.getLineNumber();
+        }, *mIterator);
+    }
 
 
-    ALogger::err(":" + AString::number(lineNumber) + " " + message);
+    ALogger::err(":" + (lineNumber == -1 ? "<last line>" : AString::number(lineNumber)) + " " + message);
     ++mErrorCount;
     if (mErrorCount > 10) {
         ALogger::err("Too many errors, terminating");
@@ -838,8 +840,7 @@ _<ExpressionNode> Parser::parseIdentifier() {
         case got<LAngleBracketToken>: {
             // template argument
             ++mIterator;
-            auto templateArgument = expect<IdentifierToken>().value();
-            ++mIterator;
+            auto templateArgument = parseTypename();
             expect<RAngleBracketToken>();
             ++mIterator;
             switch (mIterator->index()) {
@@ -957,4 +958,27 @@ _<INode> Parser::parseStructClassDefinition() {
     }
 
     return _new<StructClassDefinition>(className, items);
+}
+
+AString Parser::parseTypename() {
+    AString r;
+    for (; mIterator < mTokens.end(); ++mIterator) {
+        switch (mIterator->index()) {
+            case got<IdentifierToken>:
+                r += std::get<IdentifierToken>(*mIterator).value();
+                break;
+
+            case got<DoubleColonToken>:
+                r += "::";
+                break;
+
+            case got<LAngleBracketToken>:
+                r += parseTypename();
+                expect<RCurlyBracketToken>();
+                break;
+
+            default: return r;
+        }
+    }
+    return r;
 }

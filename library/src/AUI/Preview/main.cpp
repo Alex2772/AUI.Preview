@@ -36,17 +36,16 @@ struct Entry {
             new object_factory<ALabel>::with_args<AString>,
             new object_factory<ASelectableLabel>,
             new object_factory<ASelectableLabel>::with_args<AString>,
-            new object_factory<AImageView>::with_args<_<AImage>>,
             new object_factory<ATabView>,
             new object_factory<ATabButtonView>,
             new factory_lambda( [] {
-                _<AListModel<AString>> exampleModel = _new<AListModel<AString>>({
+                auto exampleModel = AListModel<AString>::make({
                     "Example data #1",
                     "Example data #2",
                     "Example data #3",
                     "Example data #4",
                     });
-                return _new<AListView>(AAdapter::make<AString>(exampleModel, [](const AString& s){ return s;}));
+                return _new<AListView>(AModels::adapt<AString>(exampleModel, [](const AString& s){ return s;}));
             }),
 
             // LAYOUTS =====================================================================================================
@@ -59,6 +58,7 @@ struct Entry {
 
         Autumn::get<FactoryRegistry<ass::decl::IDeclarationBase>>()->registerFactory({
              // STYLESHEET RULES ============================================================================================
+             new rule_factory<BackgroundCropping>::with_constant("H4_1", BackgroundCropping::H4_1),
 
              // BackgroundGradient
              new rule_factory<BackgroundGradient>::with_args<std::nullptr_t>,
@@ -114,6 +114,9 @@ struct Entry {
              // LayoutSpacing
              new rule_factory<LayoutSpacing>::with_args<AMetric>,
 
+             // LineHeight
+             new rule_factory<LineHeight>::with_args<float>,
+
              // Margin
              new rule_factory<Margin>::with_args<dimension>,
              new rule_factory<Margin>::with_args<dimension, dimension>,
@@ -130,8 +133,9 @@ struct Entry {
 
              // Opacity TODO
 
-             // LayoutSpacing
+             // Overflow
              new rule_factory<Overflow>::with_args<Overflow>,
+
 
              // Padding
              new rule_factory<Padding>::with_args<dimension>,

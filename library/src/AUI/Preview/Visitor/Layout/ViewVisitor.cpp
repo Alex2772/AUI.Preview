@@ -111,7 +111,7 @@ void ViewVisitor::visitNode(const TemplateOperatorCallNode& node) {
         ALogger::warn(":{} Replicate error for {}"_as.format(node.getLineNumber(), node.getTemplateArg()));
         mView = _new<ReplicateError>("<:{} {}>"_as.format(node.getLineNumber(), node.getTemplateArg()));
     }
-    mView << "preview_" + node.getTemplateArg();
+    mView << "__preview_clazz$" + node.getTemplateArg();
 }
 
 void ViewVisitor::visitNode(const ExplicitInitializerListCtorNode& node) {

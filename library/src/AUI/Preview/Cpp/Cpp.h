@@ -8,9 +8,10 @@
 #include <AUI/View/AViewContainer.h>
 #include <AUI/Preview/Cpp/AST/AST.h>
 #include <AUI/Preview/Cpp/AST/ExpressionNode.h>
+#include <AUI/IO/IInputStream.h>
 
 namespace Cpp {
-    API_AUI_PREVIEW_LIBRARY _<AST> parseCode(const APath& p);
+    API_AUI_PREVIEW_LIBRARY _<AST> parseCode(_<IInputStream> p);
     API_AUI_PREVIEW_LIBRARY _<ExpressionNode> parseExpression(const AString& text);
 };
 

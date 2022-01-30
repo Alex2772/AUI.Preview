@@ -10,7 +10,7 @@
 #include <AUI/View/AView.h>
 #include <optional>
 
-class ViewVisitor: public INodeVisitor {
+class API_AUI_PREVIEW_LIBRARY ViewVisitor: public INodeVisitor {
 protected:
     std::optional<Runtime::Variable> mVariable;
     _<AView> mView;

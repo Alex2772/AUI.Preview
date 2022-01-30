@@ -6,6 +6,7 @@
 #include "Lexer.h"
 #include <algorithm>
 #include <AUI/Preview/Cpp/Token/FloatToken.h>
+#include <AUI/Common/AChar.h>
 
 AVector<AnyToken> Lexer::performLexAnalysis() {
     AVector<AnyToken> result;
@@ -13,7 +14,7 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
         for (;;) {
             try {
                 size_t sizeBefore = result.size();
-                char c = mTokenizer.readChar();
+                AChar c = mTokenizer.readChar();
                 switch (c) {
                     case ' ':
                     case '\t':
@@ -222,11 +223,11 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         break;
                     }
                     default: {
-                        if (isalpha(c) || c == '_') {
+                        if (c.alpha() || c == '_') {
                             // name
                             mTokenizer.reverseByte();
                             auto name = mTokenizer.readStringWhile([](char c) {
-                                return isalnum(c) || c == '_';
+                                return AChar(c).alnum() || c == '_';
                             });
                             auto type = KeywordToken::fromName(name);
                             if (type == KeywordToken::NONE) {
@@ -234,7 +235,7 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                             } else {
                                 result << KeywordToken{type};
                             }
-                        } else if (isdigit(c)) {
+                        } else if (c.digit()) {
                             // number
                             mTokenizer.reverseByte();
                             auto[i, isHex] = mTokenizer.readUIntX();
@@ -266,13 +267,13 @@ AVector<AnyToken> Lexer::performLexAnalysis() {
                         x.mLineNumber = mTokenizer.getRow();
                     }, result.last());
                 }
-            } catch (const EOFException& e) {
+            } catch (const AEOFException& e) {
                 throw;
             } catch (const AException& e) {
                 reportError(e.getMessage());
             }
         }
-    } catch (const EOFException& e) {}
+    } catch (const AEOFException& e) {}
 
     ALogger::info("Lexer done, " + AString::number(result.size()) + " token(s)");
 

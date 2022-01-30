@@ -6,6 +6,7 @@
 
 #include "converter.h"
 #include "color.h"
+#include "float.h"
 #include "enum.h"
 #include "metric.h"
 #include "repeat.h"

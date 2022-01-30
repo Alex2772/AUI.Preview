@@ -2,7 +2,7 @@
 // Created by alex2 on 6/12/2021.
 //
 
-#include <AUI/IO/FileInputStream.h>
+#include <AUI/IO/AFileInputStream.h>
 #include <AUI/Json/AJson.h>
 #include <AUI/Preview/Model/Project.h>
 #include <Repository/ProjectsRepository.h>
@@ -17,7 +17,7 @@ Settings& Settings::inst() {
 
 Settings::Settings() {
     try {
-        auto settings = AJson::read(_new<FileInputStream>("preview_settings.json"));
+        auto settings = AJson::read(_new<AFileInputStream>("preview_settings.json"));
 
         for (auto& p : settings["projects"].asArray()) {
             Project project;

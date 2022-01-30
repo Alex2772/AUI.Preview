@@ -10,15 +10,19 @@
 class MyDeclarationWrapper: public ass::decl::IDeclarationBase {
 private:
     ass::decl::IDeclarationBase* mWrappedDeclaration;
-    ExplicitInitializerListCtorNode mNode;
+    _<INode> mNode;
 
 public:
-    MyDeclarationWrapper(IDeclarationBase* wrappedDeclaration, ExplicitInitializerListCtorNode&& node)
-            : mWrappedDeclaration(wrappedDeclaration), mNode(std::forward<ExplicitInitializerListCtorNode>(node)) {}
+    MyDeclarationWrapper(IDeclarationBase* wrappedDeclaration, _<INode> node)
+            : mWrappedDeclaration(wrappedDeclaration), mNode(std::move(node)) {}
 
     [[nodiscard]]
-    const ExplicitInitializerListCtorNode& getNode() const {
+    const _<INode>& getNode() const {
         return mNode;
+    }
+
+    IDeclarationBase* getWrappedDeclaration() const {
+        return mWrappedDeclaration;
     }
 
     void setWrappedDeclaration(IDeclarationBase* wrappedDeclaration) {

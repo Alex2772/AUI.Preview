@@ -46,7 +46,11 @@ public:
 
     void onMouseReleased(glm::ivec2 pos, AInput::Key button) override;
 
-    void onMouseWheel(glm::ivec2 pos, int delta) override;
+protected:
+    void recompileAss() override;
+
+public:
+    void onMouseWheel(const glm::ivec2& pos, const glm::ivec2& delta) override;
 
     bool consumesClick(const glm::ivec2& pos) override;
 
@@ -57,7 +61,6 @@ public:
     void updateLayout() override;
 
 protected:
-    void recompileCSS() override;
 
     void updateParentsLayoutIfNecessary() override;
 };

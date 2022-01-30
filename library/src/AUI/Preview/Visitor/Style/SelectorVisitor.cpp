@@ -52,7 +52,7 @@ public:
     }
 };
 
-struct MyParentSubSelector: public IAssSubSelector {
+struct MyParentSubSelector: public IAssSubSelector, public IStringable {
 private:
     _<IAssSubSelector> l;
     _<IAssSubSelector> r;
@@ -98,6 +98,10 @@ public:
          */
         assert(0);
     }
+
+    AString toString() const override {
+        return IStringable::toString(l) + " >> " + IStringable::toString(r);
+    }
 };
 
 namespace selector {
@@ -133,7 +137,7 @@ namespace selector {
         }
 
         AString toString() const override {
-            return "ass::class_of(\"{}\")"_as.format(mClasses.join(", "));
+            return "ass::class_of(\"{}\")"_as.format(mClasses.join("\", \""));
         }
     };
 }
@@ -165,9 +169,9 @@ void SelectorVisitor::visitNode(const TemplateOperatorCallNode& node) {
         /*
          * Unknown type may be a MainWindow class or some other class not provided by the user's project.
          * The workaround is use the classname as an prefix ASS class (ex.
-         * MainWindow -> addAssName("preview_MainWindow"))
+         * MainWindow -> addAssName("__preview_clazz$MainWindow"))
          */
-        auto assName = "preview_" + objectType;
+        auto assName = "__preview_clazz$" + objectType;
         mSelector.addSubSelector(selector::ClassOf(assName));
     } else {
         ALogger::warn("Unknown selector {}<{}> at {}"_as.format(node.getCallee(), node.getTemplateArg(), node.getLineNumber()));

@@ -86,6 +86,11 @@ private:
     AVector<_<INode>> parseCodeBlock();
 
 
+    /**
+     * Parses SomeType
+     * Parses SomeType::ChildType
+     */
+    AString parseTypename();
 
 public:
     Parser(const AVector<AnyToken>& tokens) : mTokens(tokens) {}

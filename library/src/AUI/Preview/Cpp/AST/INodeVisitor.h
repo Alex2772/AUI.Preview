@@ -84,4 +84,12 @@ public:
     virtual void visitNode(const FloatNode& node) {};
     virtual void visitNode(const ARepeatOperatorNode& node) {};
 
+    template<class T>
+    static _<T> assume(const _<INode>& n) {
+        if (auto c = _cast<T>(n)) {
+            return c;
+        }
+        throw AException("assume failed: expected " + AClass<T>::name() + ", got " + AReflect::name(n.get()));
+    }
+
 };

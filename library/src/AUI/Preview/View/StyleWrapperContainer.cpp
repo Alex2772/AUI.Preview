@@ -2,7 +2,6 @@
 // Created by alex2 on 6/24/2021.
 //
 
-#include <Window/MainWindow.h>
 #include "StyleWrapperContainer.h"
 #include <AUI/ASS/ASS.h>
 
@@ -90,11 +89,6 @@ void StyleWrapperContainer::onMouseReleased(glm::ivec2 pos, AInput::Key button) 
     AViewContainer::onMouseReleased(pos, button);
 }
 
-void StyleWrapperContainer::onMouseWheel(glm::ivec2 pos, int delta) {
-    Replace r(mStylesheet);
-    AViewContainer::onMouseWheel(pos, delta);
-}
-
 bool StyleWrapperContainer::consumesClick(const glm::ivec2& pos) {
     Replace r(mStylesheet);
     return AViewContainer::consumesClick(pos);
@@ -114,10 +108,6 @@ void StyleWrapperContainer::updateLayout() {
     AViewContainer::updateLayout();
 }
 
-void StyleWrapperContainer::recompileCSS() {
-    Replace r(mStylesheet);
-    AViewContainer::recompileCSS();
-}
 
 void StyleWrapperContainer::updateParentsLayoutIfNecessary() {
     Replace r(mStylesheet);
@@ -131,4 +121,14 @@ StyleWrapperContainer::StyleWrapperContainer() {
         BackgroundSolid{0xf0f0f0_rgb},
         Overflow::HIDDEN,
     });
+}
+
+void StyleWrapperContainer::onMouseWheel(const glm::ivec2& pos, const glm::ivec2& delta) {
+    Replace r(mStylesheet);
+    AViewContainer::onMouseWheel(pos, delta);
+}
+
+void StyleWrapperContainer::recompileAss() {
+    Replace r(mStylesheet);
+    AViewContainer::recompileAss();
 }

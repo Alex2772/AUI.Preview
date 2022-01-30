@@ -31,7 +31,7 @@ void StyleRuleBlockVisitor::visitNode(const ImplicitInitializerListCtorNode& nod
             DeclarationVisitor v;
             (*i)->acceptVisitor(v);
             if (auto rule = v.getDeclaration()) {
-                auto wrapper = _new<MyDeclarationWrapper>(rule.get(), std::forward<ExplicitInitializerListCtorNode>(v.getNode()));
+                auto wrapper = _new<MyDeclarationWrapper>(rule.get(), v.getNode());
                 mRule->addDeclaration(wrapper.get());
                 ourDeclarationStorage << wrapper;
                 ourDeclarationStorage << rule;

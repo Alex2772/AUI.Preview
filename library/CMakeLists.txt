@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.14.4)
 
-project(AUI.Preview.Library)
+project(aui.preview.library)
 
-aui_module(AUI.Preview.Library)
+aui_module(aui.preview.library)
 
 
-target_link_libraries(AUI.Preview.Library PRIVATE AUI.Core)
-target_link_libraries(AUI.Preview.Library PRIVATE AUI.Views)
-target_link_libraries(AUI.Preview.Library PRIVATE AUI.Json)
+aui_link(aui.preview.library PUBLIC aui.core aui.views aui.json)
+
+aui_enable_tests()

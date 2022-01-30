@@ -14,7 +14,7 @@
 
 void LayoutVisitor::visitNode(const ConstructorDeclarationNode& node) {
     // SelectorVisitor.cpp:105
-    auto assName = "preview_" + node.getClassName();
+    auto assName = "__preview_clazz$" + node.getClassName();
     mContainer << assName;
 
     Runtime::Variable v(get_class_descriptor<AViewContainer>(), mContainer);

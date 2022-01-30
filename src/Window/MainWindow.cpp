@@ -17,7 +17,6 @@
 #include <AUI/Model/AListModel.h>
 #include <View/ProjectsTabView.h>
 #include <View/StylesView.h>
-#include <AUI/Platform/Dll.h>
 #include <AUI/Common/Plugin.h>
 #include <AUI/Preview/APreview.h>
 
