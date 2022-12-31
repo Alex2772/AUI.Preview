@@ -7,4 +7,4 @@ aui_module(aui.preview.library)
 
 aui_link(aui.preview.library PUBLIC aui.core aui.views aui.json)
 
-aui_enable_tests()
+aui_enable_tests(aui.preview.library)
